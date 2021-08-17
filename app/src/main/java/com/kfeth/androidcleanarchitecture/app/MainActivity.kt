@@ -1,7 +1,8 @@
-package com.kfeth.androidcleanarchitecture
+package com.kfeth.androidcleanarchitecture.app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.kfeth.androidcleanarchitecture.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

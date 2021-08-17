@@ -5,4 +5,4 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-include ":app", ":data", ":domain"
+include ":app"
