@@ -3,8 +3,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        jcenter() // Warning: this repository is going to shut down soon
     }
 }
-rootProject.name = "Android Clean Architecture"
-include ':app'
+include ":app", ":data", ":domain"
