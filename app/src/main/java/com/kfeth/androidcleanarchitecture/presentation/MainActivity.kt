@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.app
+package com.kfeth.androidcleanarchitecture.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
