@@ -8,6 +8,7 @@ buildscript {
         targetSdkVersion = 30
 
         // Dependencies
+        coroutinesVersion = "1.5.1"
         gradleVersion = "7.0.1"
         hiltVersion = "2.37"
         kotlinVersion = "1.5.21"

@@ -6,5 +6,5 @@ import retrofit2.http.GET
 interface UsersApi {
 
     @GET("api?results=10")
-    suspend fun getUsers(): Response<UsersResponse>
+    suspend fun getUsers(): UsersResponse
 }
