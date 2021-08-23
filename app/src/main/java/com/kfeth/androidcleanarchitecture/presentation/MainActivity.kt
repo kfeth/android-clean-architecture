@@ -6,7 +6,8 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kfeth.androidcleanarchitecture.R
-import com.kfeth.androidcleanarchitecture.domain.model.UserInfo
+import com.kfeth.androidcleanarchitecture.data.UserEntity
+import com.kfeth.androidcleanarchitecture.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,32 +23,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun subscribeToData() {
-        viewModel.viewState.observe(this, ::handleViewState)
+        viewModel.resource.observe(this, ::handleResource)
     }
 
-    private fun handleViewState(viewState: ViewState<List<UserInfo>>) {
-        Log.d("KARL", "viewState: $viewState")
-        when (viewState) {
-            is Loading -> showLoading()
-            is Success -> showUsersData(viewState.data)
-            is Error -> handleError(viewState.error.localizedMessage)
-            is NoInternetState -> handleNoInternet()
+    private fun handleResource(resource: Resource<List<UserEntity>>) {
+        Log.i("TAG", "resource: $resource - ${resource.data}")
+        when (resource) {
+            is Resource.Loading -> showLoading()
+            is Resource.Error -> showError(resource.error)
+            is Resource.Success -> showData(resource.data)
         }
-    }
-
-    private fun handleNoInternet() {
-        textView.text = "No Internet!"
-    }
-
-    private fun handleError(error: String?) {
-        textView.text = "Error: $error"
-    }
-
-    private fun showUsersData(users: List<UserInfo>) {
-        textView.text = "Success: $users"
     }
 
     private fun showLoading() {
         textView.text = "Loading..."
+    }
+
+    private fun showError(error: Throwable?) {
+        textView.text = "Error: $error"
+    }
+
+    private fun showData(users: List<UserEntity>?) {
+        textView.text = "Success: $users"
     }
 }

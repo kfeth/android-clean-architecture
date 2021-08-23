@@ -1,14 +1,11 @@
 package com.kfeth.androidcleanarchitecture.util
 
+import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import retrofit2.Response
 
 inline fun <ResultType, RequestType> networkBoundResource(
     crossinline query: () -> Flow<ResultType>,
@@ -16,7 +13,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline saveFetchResult: suspend (RequestType) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true },
     crossinline onFetchSuccess: () -> Unit = { },
-    crossinline onFetchFailed: (Throwable) -> Unit = { },
+    crossinline onFetchFailed: (Throwable) -> Unit = { }
 ) = channelFlow {
     val data = query().first()
 
@@ -30,6 +27,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
             loading.cancel()
             query().collect { send(Resource.Success(it)) }
         } catch (t: Throwable) {
+            Log.e("NetworkBoundResource", "$t")
             onFetchFailed(t)
             loading.cancel()
             query().collect { send(Resource.Error(t, it)) }
@@ -39,7 +37,9 @@ inline fun <ResultType, RequestType> networkBoundResource(
     }
 }
 
-inline fun <ResultType, RequestType> networkBoundResource(
+/*
+
+inline fun <RequestType> networkBoundResourceOnline(
     crossinline fetch: suspend () -> Response<RequestType>,
     crossinline onFetchFailed: (Throwable) -> Unit = { },
 ) =
@@ -85,3 +85,5 @@ inline fun <ResultType, RequestType> networkBoundResource(
         }
         emitAll(flow)
     }
+
+ */
