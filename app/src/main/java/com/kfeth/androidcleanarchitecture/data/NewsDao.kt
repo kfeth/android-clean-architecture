@@ -7,14 +7,14 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface UserDao {
+interface NewsDao {
 
-    @Query("SELECT * FROM user")
-    fun getAllUsers(): Flow<List<UserEntity>>
+    @Query("SELECT * FROM article")
+    fun getAll(): Flow<List<ArticleEntity>>
 
-    @Query("DELETE FROM user")
-    suspend fun deleteAllUsers()
+    @Query("DELETE FROM article")
+    suspend fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUsers(users: List<UserEntity>)
+    suspend fun insert(articles: List<ArticleEntity>)
 }

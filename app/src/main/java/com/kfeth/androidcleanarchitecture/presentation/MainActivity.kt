@@ -6,13 +6,13 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.kfeth.androidcleanarchitecture.R
-import com.kfeth.androidcleanarchitecture.data.UserEntity
+import com.kfeth.androidcleanarchitecture.data.ArticleEntity
 import com.kfeth.androidcleanarchitecture.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val viewModel: UsersViewModel by viewModels()
+    private val viewModel: BreakingNewsViewModel by viewModels()
     private lateinit var textView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +26,8 @@ class MainActivity : AppCompatActivity() {
         viewModel.resource.observe(this, ::handleResource)
     }
 
-    private fun handleResource(resource: Resource<List<UserEntity>>) {
-        Log.i("TAG", "resource: $resource - ${resource.data}")
+    private fun handleResource(resource: Resource<List<ArticleEntity>>) {
+        Log.i(javaClass.name, "resource: $resource - ${resource.data?.size}")
         when (resource) {
             is Resource.Loading -> showLoading()
             is Resource.Error -> showError(resource.error)
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         textView.text = "Error: $error"
     }
 
-    private fun showData(users: List<UserEntity>?) {
-        textView.text = "Success: $users"
+    private fun showData(articles: List<ArticleEntity>?) {
+        textView.text = articles?.joinToString("\n*") { it.title }
     }
 }

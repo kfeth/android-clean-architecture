@@ -10,19 +10,19 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UsersRepository @Inject constructor(
-    private val api: UsersApi,
-    private val dao: UserDao,
-    private val db: AppDatabase,
+class NewsRepository @Inject constructor(
+    private val api: NewsApi,
+    private val dao: NewsDao,
+    private val db: NewsDatabase,
 ) {
-    fun getUsers(): Flow<Resource<List<UserEntity>>> = networkBoundResource(
-        query = { dao.getAllUsers() },
-        fetch = { api.getUsers().users },
-        saveFetchResult = { serverUsers ->
-            val users = serverUsers.map { UserEntity(it.email) }
+    fun getBreakingNews(): Flow<Resource<List<ArticleEntity>>> = networkBoundResource(
+        query = { dao.getAll() },
+        fetch = { api.getBreakingNews().articles },
+        saveFetchResult = { serverResp ->
+            val articles: List<ArticleEntity> = serverResp.map { it.mapToEntity() }
             db.withTransaction {
-                dao.deleteAllUsers()
-                dao.insertUsers(users)
+                dao.deleteAll()
+                dao.insert(articles)
             }
         },
         shouldFetch = { true },

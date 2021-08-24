@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.kfeth.androidcleanarchitecture.BuildConfig
-import com.kfeth.androidcleanarchitecture.data.AppDatabase
-import com.kfeth.androidcleanarchitecture.data.UserDao
-import com.kfeth.androidcleanarchitecture.data.UsersApi
+import com.kfeth.androidcleanarchitecture.data.NewsDatabase
+import com.kfeth.androidcleanarchitecture.data.NewsDao
+import com.kfeth.androidcleanarchitecture.data.NewsApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,28 +25,28 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserDao(database: AppDatabase): UserDao {
-        return database.userDao()
+    fun provideNewsDao(database: NewsDatabase): NewsDao {
+        return database.newsDao()
     }
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext appContext: Context): AppDatabase =
-        Room.databaseBuilder(appContext, AppDatabase::class.java, "users_database")
+    fun provideDatabase(@ApplicationContext appContext: Context): NewsDatabase =
+        Room.databaseBuilder(appContext, NewsDatabase::class.java, NewsDatabase.NAME)
             .fallbackToDestructiveMigration()
             .build()
 
     @Provides
     @Singleton
-    fun provideUsersApi(retrofit: Retrofit): UsersApi {
-        return retrofit.create(UsersApi::class.java)
+    fun provideUsersApi(retrofit: Retrofit): NewsApi {
+        return retrofit.create(NewsApi::class.java)
     }
 
     @Provides
     @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://randomuser.me/")
+            .baseUrl(NewsApi.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
