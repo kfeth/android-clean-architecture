@@ -4,8 +4,6 @@ import androidx.room.withTransaction
 import com.kfeth.androidcleanarchitecture.util.Resource
 import com.kfeth.androidcleanarchitecture.util.networkBoundResource
 import kotlinx.coroutines.flow.Flow
-import okio.IOException
-import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,6 +14,7 @@ class NewsRepository @Inject constructor(
     private val db: NewsDatabase,
 ) {
     fun getBreakingNews(): Flow<Resource<List<ArticleEntity>>> = networkBoundResource(
+        shouldFetch = { true },
         query = { dao.getAll() },
         fetch = { api.getBreakingNews().articles },
         saveFetchResult = { serverResp ->
@@ -25,12 +24,7 @@ class NewsRepository @Inject constructor(
                 dao.insert(articles)
             }
         },
-        shouldFetch = { true },
         onFetchSuccess = { },
-        onFetchFailed = {
-            if (it !is HttpException && it !is IOException) {
-                throw it
-            }
-        }
+        onFetchFailed = { }
     )
 }
