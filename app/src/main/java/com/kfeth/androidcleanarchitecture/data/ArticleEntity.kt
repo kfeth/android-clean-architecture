@@ -3,7 +3,7 @@ package com.kfeth.androidcleanarchitecture.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "article")
+@Entity(tableName = NewsDatabase.TABLE_NAME_ARTICLE)
 data class ArticleEntity(
     @PrimaryKey val url: String,
     val author: String?,

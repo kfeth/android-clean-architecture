@@ -9,9 +9,9 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 abstract class NewsDatabase : RoomDatabase() {
-
     companion object {
-        const val NAME = "news-db"
+        const val NAME = "news.db"
+        const val TABLE_NAME_ARTICLE = "article"
     }
 
     abstract fun newsDao(): NewsDao
