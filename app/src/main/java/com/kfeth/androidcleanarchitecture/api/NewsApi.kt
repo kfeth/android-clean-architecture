@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.data
+package com.kfeth.androidcleanarchitecture.api
 
 import com.kfeth.androidcleanarchitecture.BuildConfig
 import retrofit2.http.GET

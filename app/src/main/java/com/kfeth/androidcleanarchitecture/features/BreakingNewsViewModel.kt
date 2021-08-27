@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.presentation
+package com.kfeth.androidcleanarchitecture.features
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

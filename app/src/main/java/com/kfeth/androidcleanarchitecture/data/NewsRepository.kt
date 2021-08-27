@@ -1,6 +1,8 @@
 package com.kfeth.androidcleanarchitecture.data
 
 import androidx.room.withTransaction
+import com.kfeth.androidcleanarchitecture.api.NewsApi
+import com.kfeth.androidcleanarchitecture.api.mapToEntity
 import com.kfeth.androidcleanarchitecture.util.Resource
 import com.kfeth.androidcleanarchitecture.util.networkBoundResource
 import kotlinx.coroutines.flow.Flow

@@ -12,5 +12,4 @@ data class ArticleEntity(
     val imageUrl: String?,
     val publishedAt: String,
     val content: String?
-
 )

@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.presentation
+package com.kfeth.androidcleanarchitecture.features
 
 import android.os.Bundle
 import android.util.Log
