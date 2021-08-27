@@ -14,76 +14,48 @@ inline fun <ResultType, RequestType> networkBoundResource(
     crossinline shouldFetch: (ResultType) -> Boolean = { true },
     crossinline onFetchSuccess: () -> Unit = { },
     crossinline onFetchFailed: (Throwable) -> Unit = { }
-) = channelFlow {
-    val data = query().first()
+) =
+    channelFlow {
+        val data = query().first()
 
-    if (shouldFetch(data)) {
+        if (shouldFetch(data)) {
+            val loading = launch {
+                query().collect { send(Resource.Loading(it)) }
+            }
+            try {
+                saveFetchResult(fetch())
+                onFetchSuccess()
+                loading.cancel()
+                query().collect { send(Resource.Success(it)) }
+            } catch (t: Throwable) {
+                Log.e("NetworkBoundResource", "$t")
+                onFetchFailed(t)
+                loading.cancel()
+                query().collect { send(Resource.Error(t, it)) }
+            }
+        } else {
+            query().collect { send(Resource.Success(it)) }
+        }
+    }
+
+// Online only option. No DB caching used
+inline fun <T> networkBoundResource(
+    crossinline fetch: suspend () -> T,
+    crossinline onFetchSuccess: () -> Unit = { },
+    crossinline onFetchFailed: (Throwable) -> Unit = { },
+) =
+    channelFlow {
         val loading = launch {
-            query().collect { send(Resource.Loading(it)) }
+            send(Resource.Loading<T>())
         }
         try {
-            saveFetchResult(fetch())
+            val result = fetch()
             onFetchSuccess()
             loading.cancel()
-            query().collect { send(Resource.Success(it)) }
+            send(Resource.Success(result))
         } catch (t: Throwable) {
             Log.e("NetworkBoundResource", "$t")
             onFetchFailed(t)
-            loading.cancel()
-            query().collect { send(Resource.Error(t, it)) }
-        }
-    } else {
-        query().collect { send(Resource.Success(it)) }
-    }
-}
-
-/*
-
-inline fun <RequestType> networkBoundResourceOnline(
-    crossinline fetch: suspend () -> Response<RequestType>,
-    crossinline onFetchFailed: (Throwable) -> Unit = { },
-) =
-    flow {
-        emit(Resource.Loading(null))
-        try {
-            val response = fetch()
-            if (!response.isSuccessful) {
-                throw Exception("Error: ${response.code()} ${response.message()}")
-            }
-            emit(Resource.Success(response.body()))
-        } catch (throwable: Throwable) {
-            onFetchFailed(throwable)
-            emit(Resource.Error(throwable, null))
+            send(Resource.Error<T>(t))
         }
     }
-
-inline fun <ResultType, RequestType> networkBoundResource(
-    crossinline query: () -> Flow<ResultType>,
-    crossinline fetch: suspend () -> Response<RequestType>,
-    crossinline saveFetchResult: suspend (RequestType) -> Unit,
-    crossinline onFetchFailed: (Throwable) -> Unit = { },
-    crossinline shouldFetch: (ResultType?) -> Boolean = { true },
-) =
-    flow {
-        val data = query().first()
-        val flow = if (shouldFetch(data)) {
-            emit(Resource.Loading(data))
-
-            try {
-                val response = fetch()
-                if (!response.isSuccessful) {
-                    throw Exception("Error: ${response.code()} ${response.message()}")
-                }
-                saveFetchResult((response.body()!!))
-                query().map { Resource.Success(it) }
-            } catch (throwable: Throwable) {
-                onFetchFailed(throwable)
-                query().map { Resource.Error(throwable, it) }
-            }
-        } else {
-            query().map { Resource.Success(it) }
-        }
-        emitAll(flow)
-    }
-
- */
