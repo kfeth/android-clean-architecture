@@ -2,32 +2,33 @@ package com.kfeth.androidcleanarchitecture.features
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.TextView
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.kfeth.androidcleanarchitecture.R
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
 import com.kfeth.androidcleanarchitecture.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
+
     private val viewModel: BreakingNewsViewModel by viewModels()
     private lateinit var textView: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        textView = findViewById(R.id.textView)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        textView = view.findViewById(R.id.textView)
         subscribeToData()
     }
 
     private fun subscribeToData() {
-        viewModel.resource.observe(this, ::handleResource)
+        viewModel.resource.observe(viewLifecycleOwner, ::handleResource)
     }
 
     private fun handleResource(resource: Resource<List<ArticleEntity>>) {
-        Log.i(javaClass.name, "resource: $resource - ${resource.data?.size}")
+        Log.i(javaClass.simpleName, "resource: $resource - ${resource.data?.size}")
         when (resource) {
             is Resource.Loading -> showLoading()
             is Resource.Error -> showError(resource.error)
