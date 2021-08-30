@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.features
+package com.kfeth.androidcleanarchitecture.features.breakingnews
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

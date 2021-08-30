@@ -1,11 +1,13 @@
-package com.kfeth.androidcleanarchitecture.features
+package com.kfeth.androidcleanarchitecture.features.breakingnews
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.kfeth.androidcleanarchitecture.R
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
 import com.kfeth.androidcleanarchitecture.util.Resource
@@ -20,6 +22,11 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         textView = view.findViewById(R.id.textView)
+
+        view.findViewById<Button>(R.id.navigate).setOnClickListener {
+            findNavController().navigate(R.id.action_breakingNewsFragment_to_articleDetailsFragment)
+        }
+
         subscribeToData()
     }
 

@@ -7,8 +7,18 @@
 
     <fragment
         android:id="@+id/breakingNewsFragment"
-        android:name="com.kfeth.androidcleanarchitecture.features.BreakingNewsFragment"
+        android:name="com.kfeth.androidcleanarchitecture.features.breakingnews.BreakingNewsFragment"
         android:label="@string/breaking_news"
-        tools:layout="@layout/fragment_breaking_news" />
+        tools:layout="@layout/fragment_breaking_news">
+        <action
+            android:id="@+id/action_breakingNewsFragment_to_articleDetailsFragment"
+            app:destination="@id/articleDetailsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/articleDetailsFragment"
+        android:name="com.kfeth.androidcleanarchitecture.features.articledetails.ArticleDetailsFragment"
+        android:label="@string/article_details"
+        tools:layout="@layout/fragment_article_details" />
 
 </navigation>
