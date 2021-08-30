@@ -24,9 +24,8 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
         textView = view.findViewById(R.id.textView)
 
         view.findViewById<Button>(R.id.navigate).setOnClickListener {
-            findNavController().navigate(R.id.action_breakingNewsFragment_to_articleDetailsFragment)
+            navigateToDetailsFragment()
         }
-
         subscribeToData()
     }
 
@@ -53,5 +52,11 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     private fun showData(articles: List<ArticleEntity>?) {
         textView.text = articles?.joinToString("\n*") { it.title }
+    }
+
+    private fun navigateToDetailsFragment() {
+        val sampleParam = "hello param"
+        val action = BreakingNewsFragmentDirections.actionArticleDetailsFragment(sampleParam)
+        findNavController().navigate(action)
     }
 }
