@@ -1,7 +1,6 @@
 package com.kfeth.androidcleanarchitecture.features.breakingnews
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -12,6 +11,7 @@ import com.kfeth.androidcleanarchitecture.R
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
 import com.kfeth.androidcleanarchitecture.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
@@ -34,7 +34,7 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun handleResource(resource: Resource<List<ArticleEntity>>) {
-        Log.i(javaClass.simpleName, "$resource - ${resource.data?.size}")
+        Timber.i("$resource: ${resource.data?.size}")
         when (resource) {
             is Resource.Loading -> showLoading()
             is Resource.Error -> showError(resource.error)
