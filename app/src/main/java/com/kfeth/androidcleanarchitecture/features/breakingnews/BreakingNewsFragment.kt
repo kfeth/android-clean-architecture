@@ -34,7 +34,7 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun handleResource(resource: Resource<List<ArticleEntity>>) {
-        Log.i(javaClass.simpleName, "resource: $resource - ${resource.data?.size}")
+        Log.i(javaClass.simpleName, "$resource - ${resource.data?.size}")
         when (resource) {
             is Resource.Loading -> showLoading()
             is Resource.Error -> showError(resource.error)
