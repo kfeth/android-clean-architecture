@@ -1,45 +1,44 @@
 package com.kfeth.androidcleanarchitecture.features.breakingnews
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kfeth.androidcleanarchitecture.R
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
+import com.kfeth.androidcleanarchitecture.databinding.ItemArticleBinding
 
-class ArticleAdapter(private val click: (ArticleEntity) -> Unit) :
-    ListAdapter<ArticleEntity, ArticleViewHolder>(ArticlesDiff()) {
+class ArticleAdapter(private val onClick: (ArticleEntity) -> Unit) :
+    ListAdapter<ArticleEntity, ArticleViewHolder>(ArticleEntityDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArticleViewHolder.from(parent)
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) =
-        holder.bind(getItem(position), click)
+        holder.bind(getItem(position), onClick)
 }
 
-class ArticleViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val root: View = itemView.findViewById(R.id.root)
-    private val title: TextView = itemView.findViewById(R.id.title)
-    private val subtitle: TextView = itemView.findViewById(R.id.subtitle)
+class ArticleViewHolder(private val binding: ItemArticleBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(data: ArticleEntity, click: (ArticleEntity) -> Unit) {
-        title.text = data.title
-        subtitle.text = data.url
-        root.setOnClickListener { click.invoke(data) }
+    fun bind(article: ArticleEntity, click: (ArticleEntity) -> Unit) {
+        binding.apply {
+            title.text = article.title
+            subtitle.text = article.url
+            root.setOnClickListener { click.invoke(article) }
+        }
     }
     companion object {
         fun from(parent: ViewGroup): ArticleViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val view = layoutInflater.inflate(R.layout.item_article, parent, false)
-            return ArticleViewHolder(view)
+            val binding =
+                ItemArticleBinding.inflate(layoutInflater, parent, false)
+            return ArticleViewHolder(binding)
         }
     }
 }
 
-class ArticlesDiff : DiffUtil.ItemCallback<ArticleEntity>() {
+object ArticleEntityDiff : DiffUtil.ItemCallback<ArticleEntity>() {
     override fun areItemsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity) =
         oldItem.url == newItem.url
 

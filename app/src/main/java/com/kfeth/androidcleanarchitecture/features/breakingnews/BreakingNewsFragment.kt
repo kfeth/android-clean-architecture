@@ -2,55 +2,64 @@ package com.kfeth.androidcleanarchitecture.features.breakingnews
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.kfeth.androidcleanarchitecture.R
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
+import com.kfeth.androidcleanarchitecture.databinding.FragmentBreakingNewsBinding
 import com.kfeth.androidcleanarchitecture.util.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
-
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var progressBar: ProgressBar
     private val viewModel: BreakingNewsViewModel by viewModels()
+
+    private var _binding: FragmentBreakingNewsBinding? = null
+    private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentBreakingNewsBinding.bind(view)
 
-        recyclerView = view.findViewById(R.id.recyclerView)
-        progressBar = view.findViewById(R.id.progressBar)
+        val adapter = ArticleAdapter(onClick = {
+            navigateToDetailsFragment(it)
+        })
+        binding.apply {
+            recyclerView.adapter = adapter
+        }
+        subscribeToData()
+    }
 
-        val adapter = ArticleAdapter(click = { navigateToDetailsFragment(it) })
-        recyclerView.adapter = adapter
-
+    private fun subscribeToData() {
         viewModel.resource.observe(viewLifecycleOwner, {
             Timber.i("$it: ${it.data?.size}")
-            adapter.submitList(it.data)
-            when (it) {
-                is Resource.Loading -> showLoading()
-                is Resource.Error -> showError(it.error)
-                is Resource.Success -> hideLoading()
+
+            (binding.recyclerView.adapter as ArticleAdapter).submitList(it.data)
+
+            binding.progressBar.visibility = when (it) {
+                is Resource.Loading -> View.VISIBLE
+                else -> View.GONE
+            }
+            if (it is Resource.Error) {
+                showError(it.error)
             }
         })
     }
 
-    private fun showLoading() { progressBar.visibility = View.VISIBLE }
-
-    private fun hideLoading() { progressBar.visibility = View.GONE }
-
     private fun showError(error: Throwable?) {
-        hideLoading()
         // TODO SnackBar message
     }
 
     private fun navigateToDetailsFragment(articleEntity: ArticleEntity) {
-        val action = BreakingNewsFragmentDirections.actionArticleDetailsFragment(articleEntity.title)
+        val action =
+            BreakingNewsFragmentDirections.actionArticleDetailsFragment(articleEntity.title)
         findNavController().navigate(action)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
