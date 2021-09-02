@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.features.articledetails
+package com.kfeth.androidcleanarchitecture.features.details
 
 import android.os.Bundle
 import android.view.View
@@ -9,9 +9,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class ArticleDetailsFragment : Fragment(R.layout.fragment_article_details) {
+class DetailsFragment : Fragment(R.layout.fragment_details) {
 
-    private val args: ArticleDetailsFragmentArgs by navArgs()
+    private val args: DetailsFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

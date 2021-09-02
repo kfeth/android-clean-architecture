@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">Android Clean Architecture</string>
-    <string name="breaking_news">Breaking News</string>
-    <string name="article_details">Article Details</string>
+    <string name="app_name">Breaking News</string>
+    <string name="details">Details</string>
 </resources>

@@ -47,7 +47,7 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     private fun navigateToDetailsFragment(article: Article) {
         val action =
-            BreakingNewsFragmentDirections.actionArticleDetailsFragment(article.title)
+            BreakingNewsFragmentDirections.actionDetailsFragment(article.title)
         findNavController().navigate(action)
     }
 
