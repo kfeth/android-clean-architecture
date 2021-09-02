@@ -9,6 +9,8 @@ import com.kfeth.androidcleanarchitecture.R
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
 import com.kfeth.androidcleanarchitecture.databinding.FragmentBreakingNewsBinding
 import com.kfeth.androidcleanarchitecture.util.Resource
+import com.kfeth.androidcleanarchitecture.util.showSnackBarError
+import com.kfeth.androidcleanarchitecture.util.toggleVisibility
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -37,19 +39,12 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
             Timber.i("$it: ${it.data?.size}")
 
             (binding.recyclerView.adapter as ArticleAdapter).submitList(it.data)
+            binding.progressBar.toggleVisibility(it is Resource.Loading)
 
-            binding.progressBar.visibility = when (it) {
-                is Resource.Loading -> View.VISIBLE
-                else -> View.GONE
-            }
             if (it is Resource.Error) {
-                showError(it.error)
+                showSnackBarError(it.error)
             }
         })
-    }
-
-    private fun showError(error: Throwable?) {
-        // TODO SnackBar message
     }
 
     private fun navigateToDetailsFragment(articleEntity: ArticleEntity) {
