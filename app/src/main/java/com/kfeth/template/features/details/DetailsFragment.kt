@@ -1,10 +1,10 @@
-package com.kfeth.androidcleanarchitecture.features.details
+package com.kfeth.template.features.details
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.kfeth.androidcleanarchitecture.R
+import com.kfeth.template.R
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

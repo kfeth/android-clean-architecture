@@ -1,7 +1,7 @@
-package com.kfeth.androidcleanarchitecture.api
+package com.kfeth.template.api
 
 import com.google.gson.annotations.SerializedName
-import com.kfeth.androidcleanarchitecture.data.Article
+import com.kfeth.template.data.Article
 
 data class NewsResponse(
     @SerializedName("articles") val articles: List<ArticleResponse>

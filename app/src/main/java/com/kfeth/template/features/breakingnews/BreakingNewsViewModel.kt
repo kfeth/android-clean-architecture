@@ -1,12 +1,12 @@
-package com.kfeth.androidcleanarchitecture.features.breakingnews
+package com.kfeth.template.features.breakingnews
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kfeth.androidcleanarchitecture.data.Article
-import com.kfeth.androidcleanarchitecture.data.NewsRepository
-import com.kfeth.androidcleanarchitecture.util.Resource
+import com.kfeth.template.data.Article
+import com.kfeth.template.data.NewsRepository
+import com.kfeth.template.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch

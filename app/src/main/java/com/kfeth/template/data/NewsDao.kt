@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.data
+package com.kfeth.template.data
 
 import androidx.room.Dao
 import androidx.room.Insert

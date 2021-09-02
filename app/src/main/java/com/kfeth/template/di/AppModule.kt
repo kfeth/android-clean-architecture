@@ -1,12 +1,12 @@
-package com.kfeth.androidcleanarchitecture.di
+package com.kfeth.template.di
 
 import android.content.Context
 import androidx.room.Room
 import com.google.gson.GsonBuilder
-import com.kfeth.androidcleanarchitecture.BuildConfig
-import com.kfeth.androidcleanarchitecture.api.NewsApi
-import com.kfeth.androidcleanarchitecture.data.NewsDao
-import com.kfeth.androidcleanarchitecture.data.NewsDatabase
+import com.kfeth.template.BuildConfig
+import com.kfeth.template.api.NewsApi
+import com.kfeth.template.data.NewsDao
+import com.kfeth.template.data.NewsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

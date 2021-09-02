@@ -1,16 +1,16 @@
-package com.kfeth.androidcleanarchitecture.features.breakingnews
+package com.kfeth.template.features.breakingnews
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.kfeth.androidcleanarchitecture.R
-import com.kfeth.androidcleanarchitecture.data.Article
-import com.kfeth.androidcleanarchitecture.databinding.FragmentBreakingNewsBinding
-import com.kfeth.androidcleanarchitecture.util.Resource
-import com.kfeth.androidcleanarchitecture.util.showSnackBarError
-import com.kfeth.androidcleanarchitecture.util.toggleVisibility
+import com.kfeth.template.R
+import com.kfeth.template.data.Article
+import com.kfeth.template.databinding.FragmentBreakingNewsBinding
+import com.kfeth.template.util.Resource
+import com.kfeth.template.util.showSnackBarError
+import com.kfeth.template.util.toggleVisibility
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

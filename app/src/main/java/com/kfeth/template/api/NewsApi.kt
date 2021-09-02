@@ -1,6 +1,6 @@
-package com.kfeth.androidcleanarchitecture.api
+package com.kfeth.template.api
 
-import com.kfeth.androidcleanarchitecture.BuildConfig
+import com.kfeth.template.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Headers
 

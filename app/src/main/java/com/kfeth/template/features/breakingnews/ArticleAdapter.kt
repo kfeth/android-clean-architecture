@@ -1,13 +1,13 @@
-package com.kfeth.androidcleanarchitecture.features.breakingnews
+package com.kfeth.template.features.breakingnews
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kfeth.androidcleanarchitecture.data.Article
-import com.kfeth.androidcleanarchitecture.databinding.ItemArticleBinding
-import com.kfeth.androidcleanarchitecture.util.setImageUrl
+import com.kfeth.template.data.Article
+import com.kfeth.template.databinding.ItemArticleBinding
+import com.kfeth.template.util.setImageUrl
 
 class ArticleAdapter(private val onClick: (Article) -> Unit) :
     ListAdapter<Article, ArticleViewHolder>(ArticleDiff) {

@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.data
+package com.kfeth.template.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

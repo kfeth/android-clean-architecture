@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture
+package com.kfeth.template
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

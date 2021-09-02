@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture
+package com.kfeth.template
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

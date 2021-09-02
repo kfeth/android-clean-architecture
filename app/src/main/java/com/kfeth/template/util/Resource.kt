@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.util
+package com.kfeth.template.util
 
 sealed class Resource<T>(
     val data: T? = null,

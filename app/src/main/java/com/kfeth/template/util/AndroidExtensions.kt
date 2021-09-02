@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.util
+package com.kfeth.template.util
 
 import android.view.View
 import android.widget.ImageView
@@ -6,7 +6,7 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
-import com.kfeth.androidcleanarchitecture.R
+import com.kfeth.template.R
 
 fun ImageView.setImageUrl(imageUrl: String?) {
     Glide.with(this)

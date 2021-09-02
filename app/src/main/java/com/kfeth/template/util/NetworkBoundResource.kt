@@ -1,4 +1,4 @@
-package com.kfeth.androidcleanarchitecture.util
+package com.kfeth.template.util
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
