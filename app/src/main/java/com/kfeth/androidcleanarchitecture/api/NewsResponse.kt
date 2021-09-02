@@ -1,7 +1,7 @@
 package com.kfeth.androidcleanarchitecture.api
 
 import com.google.gson.annotations.SerializedName
-import com.kfeth.androidcleanarchitecture.data.ArticleEntity
+import com.kfeth.androidcleanarchitecture.data.Article
 
 data class NewsResponse(
     @SerializedName("articles") val articles: List<ArticleResponse>
@@ -18,7 +18,7 @@ data class ArticleResponse(
 )
 
 fun ArticleResponse.mapToEntity() =
-    ArticleEntity(
+    Article(
         url = url,
         author = author,
         title = title,

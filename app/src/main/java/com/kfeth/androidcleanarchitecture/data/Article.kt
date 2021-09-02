@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = NewsDatabase.TABLE_NAME_ARTICLE)
-data class ArticleEntity(
+data class Article(
     @PrimaryKey val url: String,
     val author: String?,
     val title: String,

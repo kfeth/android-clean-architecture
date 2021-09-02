@@ -6,13 +6,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.kfeth.androidcleanarchitecture.R
-import com.kfeth.androidcleanarchitecture.data.ArticleEntity
+import com.kfeth.androidcleanarchitecture.data.Article
 import com.kfeth.androidcleanarchitecture.databinding.FragmentBreakingNewsBinding
 import com.kfeth.androidcleanarchitecture.util.Resource
 import com.kfeth.androidcleanarchitecture.util.showSnackBarError
 import com.kfeth.androidcleanarchitecture.util.toggleVisibility
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
@@ -36,7 +35,6 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
 
     private fun subscribeToData() {
         viewModel.resource.observe(viewLifecycleOwner, {
-            Timber.i("$it: ${it.data?.size}")
 
             (binding.recyclerView.adapter as ArticleAdapter).submitList(it.data)
             binding.progressBar.toggleVisibility(it is Resource.Loading)
@@ -47,9 +45,9 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
         })
     }
 
-    private fun navigateToDetailsFragment(articleEntity: ArticleEntity) {
+    private fun navigateToDetailsFragment(article: Article) {
         val action =
-            BreakingNewsFragmentDirections.actionArticleDetailsFragment(articleEntity.title)
+            BreakingNewsFragmentDirections.actionArticleDetailsFragment(article.title)
         findNavController().navigate(action)
     }
 

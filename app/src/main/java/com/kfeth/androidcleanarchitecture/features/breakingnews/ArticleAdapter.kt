@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kfeth.androidcleanarchitecture.data.ArticleEntity
+import com.kfeth.androidcleanarchitecture.data.Article
 import com.kfeth.androidcleanarchitecture.databinding.ItemArticleBinding
 import com.kfeth.androidcleanarchitecture.util.setImageUrl
 
-class ArticleAdapter(private val onClick: (ArticleEntity) -> Unit) :
-    ListAdapter<ArticleEntity, ArticleViewHolder>(ArticleEntityDiff) {
+class ArticleAdapter(private val onClick: (Article) -> Unit) :
+    ListAdapter<Article, ArticleViewHolder>(ArticleDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ArticleViewHolder.from(parent)
@@ -22,7 +22,7 @@ class ArticleAdapter(private val onClick: (ArticleEntity) -> Unit) :
 class ArticleViewHolder(private val binding: ItemArticleBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(article: ArticleEntity, click: (ArticleEntity) -> Unit) {
+    fun bind(article: Article, click: (Article) -> Unit) {
         binding.apply {
             title.text = article.title
             imageView.setImageUrl(article.imageUrl)
@@ -39,10 +39,10 @@ class ArticleViewHolder(private val binding: ItemArticleBinding) :
     }
 }
 
-object ArticleEntityDiff : DiffUtil.ItemCallback<ArticleEntity>() {
-    override fun areItemsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity) =
+object ArticleDiff : DiffUtil.ItemCallback<Article>() {
+    override fun areItemsTheSame(oldItem: Article, newItem: Article) =
         oldItem.url == newItem.url
 
-    override fun areContentsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity) =
+    override fun areContentsTheSame(oldItem: Article, newItem: Article) =
         oldItem == newItem
 }

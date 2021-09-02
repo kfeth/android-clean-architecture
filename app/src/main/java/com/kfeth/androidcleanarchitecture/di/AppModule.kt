@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.google.gson.GsonBuilder
 import com.kfeth.androidcleanarchitecture.BuildConfig
-import com.kfeth.androidcleanarchitecture.data.NewsDatabase
-import com.kfeth.androidcleanarchitecture.data.NewsDao
 import com.kfeth.androidcleanarchitecture.api.NewsApi
+import com.kfeth.androidcleanarchitecture.data.NewsDao
+import com.kfeth.androidcleanarchitecture.data.NewsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,14 +31,14 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext appContext: Context): NewsDatabase =
+    fun provideNewsDatabase(@ApplicationContext appContext: Context): NewsDatabase =
         Room.databaseBuilder(appContext, NewsDatabase::class.java, NewsDatabase.NAME)
             .fallbackToDestructiveMigration()
             .build()
 
     @Provides
     @Singleton
-    fun provideUsersApi(retrofit: Retrofit): NewsApi {
+    fun provideNewsApi(retrofit: Retrofit): NewsApi {
         return retrofit.create(NewsApi::class.java)
     }
 
