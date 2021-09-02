@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.kfeth.androidcleanarchitecture.data.ArticleEntity
 import com.kfeth.androidcleanarchitecture.databinding.ItemArticleBinding
+import com.kfeth.androidcleanarchitecture.util.setImageUrl
 
 class ArticleAdapter(private val onClick: (ArticleEntity) -> Unit) :
     ListAdapter<ArticleEntity, ArticleViewHolder>(ArticleEntityDiff) {
@@ -24,7 +25,7 @@ class ArticleViewHolder(private val binding: ItemArticleBinding) :
     fun bind(article: ArticleEntity, click: (ArticleEntity) -> Unit) {
         binding.apply {
             title.text = article.title
-            subtitle.text = article.url
+            imageView.setImageUrl(article.imageUrl)
             root.setOnClickListener { click.invoke(article) }
         }
     }

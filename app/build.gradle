@@ -60,6 +60,8 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$okHttpVersion"
 
+    implementation "com.github.bumptech.glide:glide:$glideVersion"
+
     implementation "com.jakewharton.timber:timber:$timberVersion"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"

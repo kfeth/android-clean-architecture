@@ -1,5 +1,6 @@
 package com.kfeth.androidcleanarchitecture.util
 
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
@@ -26,6 +27,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
                 saveFetchResult(fetch())
                 onFetchSuccess()
                 loading.cancel()
+                delay(1000)
                 query().collect { send(Resource.Success(it)) }
             } catch (t: Throwable) {
                 Timber.w(t)
@@ -52,6 +54,7 @@ inline fun <T> networkBoundResource(
             val result = fetch()
             onFetchSuccess()
             loading.cancel()
+            delay(1000)
             send(Resource.Success(result))
         } catch (t: Throwable) {
             Timber.w(t)
