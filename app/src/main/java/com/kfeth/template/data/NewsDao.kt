@@ -17,4 +17,7 @@ interface NewsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(articles: List<Article>)
+
+    @Query("SELECT * FROM article WHERE url = :articleUrl")
+    fun getArticle(articleUrl: String): Flow<Article>
 }

@@ -15,6 +15,9 @@ class NewsRepository @Inject constructor(
     private val dao: NewsDao,
     private val db: NewsDatabase,
 ) {
+    fun getArticle(articleUrl: String): Flow<Article> =
+        dao.getArticle(articleUrl)
+
     fun getBreakingNews(): Flow<Resource<List<Article>>> = networkBoundResource(
         query = { dao.getAll() },
         fetch = { api.getBreakingNews().articles },
@@ -26,8 +29,9 @@ class NewsRepository @Inject constructor(
             }
         }
     )
-    /*
-     Use this for no db caching
+
+    /**
+     * Use this option for no db caching
      */
     fun getBreakingNewsNoCache(): Flow<Resource<List<Article>>> = networkBoundResource(
         fetch = {
