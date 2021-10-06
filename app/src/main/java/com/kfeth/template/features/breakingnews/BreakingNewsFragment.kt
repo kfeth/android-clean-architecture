@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+//import androidx.navigation.fragment.findNavController
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
 import com.kfeth.template.databinding.FragmentBreakingNewsBinding
@@ -46,9 +46,9 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun navigateToDetailsFragment(article: Article) {
-        val action =
-            BreakingNewsFragmentDirections.actionDetailsFragment(article.url)
-        findNavController().navigate(action)
+//        val action =
+//            BreakingNewsFragmentDirections.actionDetailsFragment(article.url)
+//        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

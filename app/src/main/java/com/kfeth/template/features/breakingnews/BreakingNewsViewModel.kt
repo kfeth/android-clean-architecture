@@ -27,14 +27,4 @@ class BreakingNewsViewModel @Inject constructor(
             }
         }
     }
-
-    /**
-     * Example of using a loadTrigger for manual refreshes
-     private val loadTrigger = MutableLiveData(Unit)
-     fun onManualRefresh() { loadTrigger.value = Unit }
-
-     val resource: LiveData<Resource<List<Article>>> = loadTrigger.switchMap {
-     repository.getBreakingNews().asLiveData(viewModelScope.coroutineContext)
-     }
-     */
 }

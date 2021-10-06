@@ -29,13 +29,4 @@ class NewsRepository @Inject constructor(
             }
         }
     )
-
-    /**
-     * Use this option for no db caching
-     */
-    fun getBreakingNewsNoCache(): Flow<Resource<List<Article>>> = networkBoundResource(
-        fetch = {
-            api.getBreakingNews().articles.map { it.mapToEntity() }
-        }
-    )
 }

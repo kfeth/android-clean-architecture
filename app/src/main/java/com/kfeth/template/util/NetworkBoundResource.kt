@@ -39,26 +39,3 @@ inline fun <ResultType, RequestType> networkBoundResource(
             query().collect { send(Resource.Success(it)) }
         }
     }
-
-// Online only option. No DB caching used
-inline fun <T> networkBoundResource(
-    crossinline fetch: suspend () -> T,
-    crossinline onFetchSuccess: () -> Unit = { },
-    crossinline onFetchFailed: (Throwable) -> Unit = { },
-) =
-    channelFlow {
-        val loading = launch {
-            send(Resource.Loading<T>())
-        }
-        try {
-            val result = fetch()
-            onFetchSuccess()
-            loading.cancel()
-            delay(1000)
-            send(Resource.Success(result))
-        } catch (t: Throwable) {
-            Timber.w(t)
-            onFetchFailed(t)
-            send(Resource.Error<T>(t))
-        }
-    }
