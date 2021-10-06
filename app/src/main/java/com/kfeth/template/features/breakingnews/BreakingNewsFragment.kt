@@ -8,9 +8,6 @@ import androidx.fragment.app.viewModels
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
 import com.kfeth.template.databinding.FragmentBreakingNewsBinding
-import com.kfeth.template.util.Resource
-import com.kfeth.template.util.showSnackBarError
-import com.kfeth.template.util.toggleVisibility
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,15 +31,15 @@ class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
     }
 
     private fun subscribeToData() {
-        viewModel.resource.observe(viewLifecycleOwner, {
-
-            (binding.recyclerView.adapter as ArticleAdapter).submitList(it.data)
-            binding.progressBar.toggleVisibility(it is Resource.Loading)
-
-            if (it is Resource.Error) {
-                showSnackBarError(it.error)
-            }
-        })
+//        viewModel.resource.observe(viewLifecycleOwner, {
+//
+//            (binding.recyclerView.adapter as ArticleAdapter).submitList(it.data)
+//            binding.progressBar.toggleVisibility(it is Resource.Loading)
+//
+//            if (it is Resource.Error) {
+//                showSnackBarError(it.error)
+//            }
+//        })
     }
 
     private fun navigateToDetailsFragment(article: Article) {

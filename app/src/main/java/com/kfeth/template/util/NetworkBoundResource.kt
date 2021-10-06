@@ -21,21 +21,21 @@ inline fun <ResultType, RequestType> networkBoundResource(
 
         if (shouldFetch(data)) {
             val loading = launch {
-                query().collect { send(Resource.Loading(it)) }
+                query().collect { send(UiState.Loading(it)) }
             }
             try {
                 saveFetchResult(fetch())
                 onFetchSuccess()
                 loading.cancel()
                 delay(1000)
-                query().collect { send(Resource.Success(it)) }
+                query().collect { send(UiState.Success(it)) }
             } catch (t: Throwable) {
                 Timber.w(t)
                 onFetchFailed(t)
                 loading.cancel()
-                query().collect { send(Resource.Error(t, it)) }
+                query().collect { send(UiState.Error(t, it)) }
             }
         } else {
-            query().collect { send(Resource.Success(it)) }
+            query().collect { send(UiState.Success(it)) }
         }
     }
