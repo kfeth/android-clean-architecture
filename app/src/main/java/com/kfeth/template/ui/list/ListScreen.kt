@@ -6,7 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,12 +27,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberImagePainter
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
 import com.kfeth.template.features.breakingnews.BreakingNewsViewModel
@@ -54,7 +54,6 @@ fun ListScreen(
     state: UiState<List<Article>>
 ) {
     Timber.d("State: $state : ${state.data?.size}")
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -95,12 +94,10 @@ fun ArticleListItem(
             .clip(shape = MaterialTheme.shapes.medium)
             .clickable(onClick = { /* Todo */ })
     ) {
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        NetworkImage(
+            imageUrl = article.imageUrl,
             modifier = Modifier
-                .heightIn(max = 250.dp)
+                .height(250.dp)
                 .fillMaxWidth()
         )
         GradientText(
@@ -108,6 +105,28 @@ fun ArticleListItem(
             modifier = Modifier.align(alignment = Alignment.BottomCenter)
         )
     }
+}
+
+@Composable
+fun NetworkImage(
+    imageUrl: String?,
+    modifier: Modifier = Modifier,
+    placeholderResId: Int = R.drawable.placeholder,
+) {
+    Image(
+        painter = rememberImagePainter(
+            data = imageUrl,
+            builder = {
+                crossfade(enable = true)
+                placeholder(placeholderResId)
+                error(placeholderResId)
+                fallback(placeholderResId)
+            }
+        ),
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
+    )
 }
 
 @Composable
