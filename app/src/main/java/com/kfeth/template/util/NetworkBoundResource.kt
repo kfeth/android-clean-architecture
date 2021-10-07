@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 
 inline fun <ResultType, RequestType> networkBoundResource(
-    crossinline query: () -> Flow<ResultType>,
+    crossinline query: suspend () -> Flow<ResultType>,
     crossinline fetch: suspend () -> RequestType,
     crossinline saveFetchResult: suspend (RequestType) -> Unit,
     crossinline shouldFetch: (ResultType) -> Boolean = { true },
@@ -27,7 +27,7 @@ inline fun <ResultType, RequestType> networkBoundResource(
                 saveFetchResult(fetch())
                 onFetchSuccess()
                 loading.cancel()
-                delay(1000)
+                delay(2000)
                 query().collect { send(UiState.Success(it)) }
             } catch (t: Throwable) {
                 Timber.w(t)

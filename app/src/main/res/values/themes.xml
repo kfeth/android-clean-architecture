@@ -1,7 +1,8 @@
 <resources>
 
-    <style name="Theme.AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="Theme.AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="android:statusBarColor">@color/status_bar</item>
+        <item name="android:windowBackground">@color/status_bar</item>
     </style>
 
 </resources>

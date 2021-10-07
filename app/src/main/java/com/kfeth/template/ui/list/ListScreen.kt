@@ -1,13 +1,41 @@
 package com.kfeth.template.ui.list
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kfeth.template.R
 import com.kfeth.template.data.Article
 import com.kfeth.template.features.breakingnews.BreakingNewsViewModel
+import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.UiState
+import com.kfeth.template.util.mockArticles
 import timber.log.Timber
 
 @Composable
@@ -21,5 +49,104 @@ fun ListScreen(
 @Composable
 fun ListScreen(state: UiState<List<Article>>) {
     Timber.d("State: $state : ${state.data?.size}")
-    Text(text = "$state")
+
+    Scaffold(
+        topBar = {
+            TopBar()
+        }
+    ) {
+        ArticleList(articles = state.data.orEmpty())
+
+        if (state is UiState.Loading) {
+            LoadingIndicator()
+        }
+    }
+}
+
+@Composable
+fun TopBar() {
+    TopAppBar(
+        title = {
+            Text(text = stringResource(id = R.string.app_name))
+        }
+    )
+}
+
+@Composable
+fun ArticleList(
+    articles: List<Article>,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
+        items(items = articles) {
+            ArticleListItem(article = it, modifier = modifier)
+        }
+    }
+}
+
+@Composable
+fun ArticleListItem(
+    article: Article,
+    modifier: Modifier = Modifier
+) {
+    val typography = MaterialTheme.typography
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+            .clip(shape = MaterialTheme.shapes.medium)
+    ) {
+        Image(
+            painter = painterResource(R.drawable.ic_launcher_background),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .heightIn(max = 100.dp)
+                .fillMaxWidth()
+        )
+        Spacer(Modifier.height(16.dp))
+        Text(
+            text = article.title,
+            style = typography.h6,
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = article.author.orEmpty(),
+            style = typography.subtitle2,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+    }
+}
+
+@Composable
+fun LoadingIndicator() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Preview
+@Composable
+fun ListScreenPreview() {
+    AppTheme {
+        Surface {
+            ListScreen(
+                state = UiState.Success(data = mockArticles())
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ArticleListItemPreview() {
+    Surface {
+        ArticleListItem(
+            article = mockArticles().first()
+        )
+    }
 }
