@@ -1,17 +1,14 @@
-package com.kfeth.template.ui.list
+package com.kfeth.template.ui.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
@@ -33,27 +30,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberImagePainter
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
-import com.kfeth.template.features.breakingnews.BreakingNewsViewModel
 import com.kfeth.template.ui.theme.AppTheme
-import com.kfeth.template.util.UiState
 import com.kfeth.template.util.mockArticles
 import timber.log.Timber
 
 @Composable
-fun ListScreen(
-    viewModel: BreakingNewsViewModel = hiltViewModel()
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsState()
-    ListScreen(state)
+
+    HomeScreen(
+        state = state,
+        onSwipeRefresh = { viewModel.refreshData() }
+    )
 }
 
 @Composable
-fun ListScreen(
-    state: UiState<List<Article>>
+fun HomeScreen(
+    state: HomeUiState,
+    onSwipeRefresh: () -> Unit
 ) {
-    Timber.d("State: $state : ${state.data?.size}")
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,10 +65,20 @@ fun ListScreen(
             )
         }
     ) {
-        ArticleList(articles = state.data.orEmpty())
+        Timber.d("State: loading=${state.loading}, articles=${state.articles.size}")
 
-        if (state is UiState.Loading) {
-            LoadingIndicator()
+        SwipeRefresh(
+            state = rememberSwipeRefreshState(state.loading),
+            onRefresh = { onSwipeRefresh() },
+            indicator = { state, trigger ->
+                SwipeRefreshIndicator(
+                    state = state,
+                    refreshTriggerDistance = trigger,
+                    backgroundColor = MaterialTheme.colors.primary
+                )
+            }
+        ) {
+            ArticleList(articles = state.articles)
         }
     }
 }
@@ -154,24 +166,14 @@ fun GradientText(
     )
 }
 
-@Composable
-fun LoadingIndicator() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
 @Preview
 @Composable
 fun ListScreenPreview() {
     AppTheme {
         Surface {
-            ListScreen(
-                state = UiState.Success(data = mockArticles())
+            HomeScreen(
+                state = HomeUiState(articles = mockArticles()),
+                onSwipeRefresh = { }
             )
         }
     }

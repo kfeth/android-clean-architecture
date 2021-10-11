@@ -3,8 +3,9 @@ package com.kfeth.template.data
 import androidx.room.withTransaction
 import com.kfeth.template.api.NewsApi
 import com.kfeth.template.api.mapToEntity
-import com.kfeth.template.util.UiState
+import com.kfeth.template.util.Resource
 import com.kfeth.template.util.networkBoundResource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -18,9 +19,12 @@ class NewsRepository @Inject constructor(
     fun getArticle(articleUrl: String): Flow<Article> =
         dao.getArticle(articleUrl)
 
-    fun getBreakingNews(): Flow<UiState<List<Article>>> = networkBoundResource(
+    fun getBreakingNews(): Flow<Resource<List<Article>>> = networkBoundResource(
         query = { dao.getAll() },
-        fetch = { api.getBreakingNews().articles },
+        fetch = {
+            delay(3000)
+            api.getBreakingNews().articles
+        },
         saveFetchResult = { serverResp ->
             val articles: List<Article> = serverResp.map { it.mapToEntity() }
             db.withTransaction {

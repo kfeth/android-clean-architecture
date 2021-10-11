@@ -1,10 +1,11 @@
 package com.kfeth.template.util
 
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -21,21 +22,20 @@ inline fun <ResultType, RequestType> networkBoundResource(
 
         if (shouldFetch(data)) {
             val loading = launch {
-                query().collect { send(UiState.Loading(it)) }
+                query().collect { send(Resource.Loading(it)) }
             }
             try {
                 saveFetchResult(fetch())
                 onFetchSuccess()
                 loading.cancel()
-                delay(2000)
-                query().collect { send(UiState.Success(it)) }
+                query().collect { send(Resource.Success(it)) }
             } catch (t: Throwable) {
                 Timber.w(t)
                 onFetchFailed(t)
                 loading.cancel()
-                query().collect { send(UiState.Error(t, it)) }
+                query().collect { send(Resource.Error(t, it)) }
             }
         } else {
-            query().collect { send(UiState.Success(it)) }
+            query().collect { send(Resource.Success(it)) }
         }
-    }
+    }.flowOn(Dispatchers.IO)

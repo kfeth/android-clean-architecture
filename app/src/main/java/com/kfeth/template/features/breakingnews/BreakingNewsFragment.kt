@@ -8,11 +8,12 @@ import androidx.fragment.app.viewModels
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
 import com.kfeth.template.databinding.FragmentBreakingNewsBinding
+import com.kfeth.template.ui.home.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class BreakingNewsFragment : Fragment(R.layout.fragment_breaking_news) {
-    private val viewModel: BreakingNewsViewModel by viewModels()
+    private val viewModel: HomeViewModel by viewModels()
 
     private var _binding: FragmentBreakingNewsBinding? = null
     private val binding get() = _binding!!

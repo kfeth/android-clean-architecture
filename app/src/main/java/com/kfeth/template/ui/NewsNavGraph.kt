@@ -5,11 +5,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.kfeth.template.ui.Destinations.ARTICLE_LIST
-import com.kfeth.template.ui.list.ListScreen
+import com.kfeth.template.ui.Destinations.HOME
+import com.kfeth.template.ui.home.HomeScreen
 
 object Destinations {
-    const val ARTICLE_LIST = "list"
+    const val HOME = "home"
 }
 
 @Composable
@@ -18,10 +18,10 @@ fun NewsNavGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = ARTICLE_LIST
+        startDestination = HOME
     ) {
-        composable(ARTICLE_LIST) {
-            ListScreen()
+        composable(HOME) {
+            HomeScreen()
         }
     }
 }
