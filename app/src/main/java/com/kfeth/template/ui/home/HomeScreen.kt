@@ -41,20 +41,23 @@ import timber.log.Timber
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onArticleTap: (String) -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     HomeScreen(
         state = state,
-        onSwipeRefresh = { viewModel.refreshData() }
+        onSwipeRefresh = { viewModel.refreshData() },
+        onArticleTap = onArticleTap
     )
 }
 
 @Composable
 fun HomeScreen(
     state: HomeUiState,
-    onSwipeRefresh: () -> Unit
+    onSwipeRefresh: () -> Unit,
+    onArticleTap: (String) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -69,7 +72,7 @@ fun HomeScreen(
 
         SwipeRefresh(
             state = rememberSwipeRefreshState(state.loading),
-            onRefresh = { onSwipeRefresh() },
+            onRefresh = onSwipeRefresh,
             indicator = { state, trigger ->
                 SwipeRefreshIndicator(
                     state = state,
@@ -78,7 +81,10 @@ fun HomeScreen(
                 )
             }
         ) {
-            ArticleList(articles = state.articles)
+            ArticleList(
+                articles = state.articles,
+                onArticleTap = onArticleTap
+            )
         }
     }
 }
@@ -86,25 +92,30 @@ fun HomeScreen(
 @Composable
 fun ArticleList(
     articles: List<Article>,
+    onArticleTap: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(modifier = modifier) {
         items(items = articles) {
-            ArticleListItem(article = it)
+            ArticleListItem(
+                article = it,
+                onArticleTap = onArticleTap
+            )
         }
     }
 }
 
 @Composable
 fun ArticleListItem(
-    article: Article
+    article: Article,
+    onArticleTap: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
             .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(onClick = { /* Todo */ })
+            .clickable(onClick = { onArticleTap(article.url) })
     ) {
         NetworkImage(
             imageUrl = article.imageUrl,
@@ -173,7 +184,8 @@ fun ListScreenPreview() {
         Surface {
             HomeScreen(
                 state = HomeUiState(articles = mockArticles()),
-                onSwipeRefresh = { }
+                onSwipeRefresh = { },
+                onArticleTap = { }
             )
         }
     }
@@ -184,41 +196,8 @@ fun ListScreenPreview() {
 fun ArticleListItemPreview() {
     Surface {
         ArticleListItem(
-            article = mockArticles().first()
+            article = mockArticles().first(),
+            onArticleTap = { }
         )
     }
 }
-
-//@Composable
-//fun ArticleListItem(
-//    article: Article,
-//    modifier: Modifier = Modifier
-//) {
-//    val typography = MaterialTheme.typography
-//    Column(
-//        modifier = modifier
-//            .fillMaxWidth()
-//            .padding(16.dp)
-//            .clip(shape = MaterialTheme.shapes.medium)
-//    ) {
-//        Image(
-//            painter = painterResource(R.drawable.ic_launcher_background),
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier
-//                .heightIn(max = 100.dp)
-//                .fillMaxWidth()
-//        )
-//        Spacer(Modifier.height(16.dp))
-//        Text(
-//            text = article.title,
-//            style = typography.h6,
-//            modifier = Modifier.padding(bottom = 8.dp)
-//        )
-//        Text(
-//            text = article.author.orEmpty(),
-//            style = typography.subtitle2,
-//            modifier = Modifier.padding(bottom = 4.dp)
-//        )
-//    }
-//}
