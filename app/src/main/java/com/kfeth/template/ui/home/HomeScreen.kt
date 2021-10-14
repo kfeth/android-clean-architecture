@@ -1,6 +1,5 @@
 package com.kfeth.template.ui.home
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,18 +22,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberImagePainter
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
+import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
 import timber.log.Timber
@@ -62,9 +60,7 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(text = stringResource(id = R.string.app_name))
-                }
+                title = { Text(stringResource(R.string.app_name)) }
             )
         }
     ) {
@@ -120,7 +116,7 @@ fun ArticleListItem(
         NetworkImage(
             imageUrl = article.imageUrl,
             modifier = Modifier
-                .height(250.dp)
+                .height(200.dp)
                 .fillMaxWidth()
         )
         GradientText(
@@ -128,28 +124,6 @@ fun ArticleListItem(
             modifier = Modifier.align(alignment = Alignment.BottomCenter)
         )
     }
-}
-
-@Composable
-fun NetworkImage(
-    imageUrl: String?,
-    modifier: Modifier = Modifier,
-    placeholderResId: Int = R.drawable.placeholder,
-) {
-    Image(
-        painter = rememberImagePainter(
-            data = imageUrl,
-            builder = {
-                crossfade(enable = true)
-                placeholder(placeholderResId)
-                error(placeholderResId)
-                fallback(placeholderResId)
-            }
-        ),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
-        modifier = modifier
-    )
 }
 
 @Composable
