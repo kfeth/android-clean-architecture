@@ -9,12 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -35,20 +39,35 @@ import com.kfeth.template.util.mockArticles
 @Composable
 fun DetailsScreen(
     viewModel: DetailsViewModel = hiltViewModel(),
-    articleId: String
+    articleId: String,
+    onNavigateUp: () -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
     viewModel.loadArticle(articleId)
 
-    DetailsScreen(state)
+    DetailsScreen(
+        state = state,
+        onNavigateUp = onNavigateUp
+    )
 }
 
 @Composable
-fun DetailsScreen(state: DetailsUiState) {
+fun DetailsScreen(
+    state: DetailsUiState,
+    onNavigateUp: () -> Unit
+) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) }
+                title = { Text(stringResource(R.string.app_name)) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateUp) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                }
             )
         }
     ) {
@@ -120,7 +139,8 @@ fun DetailsScreenPreview() {
     AppTheme {
         Surface {
             DetailsScreen(
-                state = DetailsUiState(article = mockArticles().first())
+                state = DetailsUiState(article = mockArticles().first()),
+                onNavigateUp = { }
             )
         }
     }
