@@ -3,20 +3,30 @@ package com.kfeth.template.ui.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +56,7 @@ fun HomeScreen(
 
     HomeScreen(
         state = state,
-        onSwipeRefresh = { viewModel.refreshData() },
+        onRefresh = viewModel::refreshData,
         onArticleTap = onArticleTap
     )
 }
@@ -54,21 +64,27 @@ fun HomeScreen(
 @Composable
 fun HomeScreen(
     state: HomeUiState,
-    onSwipeRefresh: () -> Unit,
-    onArticleTap: (String) -> Unit
+    onRefresh: () -> Unit,
+    onArticleTap: (String) -> Unit,
+    scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
+    Timber.d("State: loading=${state.loading}, articles=${state.articles.size}, error=${state.error}")
+
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = {
             TopAppBar(
                 title = { Text(stringResource(R.string.app_name)) }
             )
         }
     ) {
-        Timber.d("State: loading=${state.loading}, articles=${state.articles.size}")
+        if (state.loading && state.articles.isEmpty()) {
+            FullScreenLoading()
+        }
 
         SwipeRefresh(
             state = rememberSwipeRefreshState(state.loading),
-            onRefresh = onSwipeRefresh,
+            onRefresh = onRefresh,
             indicator = { state, trigger ->
                 SwipeRefreshIndicator(
                     state = state,
@@ -82,17 +98,45 @@ fun HomeScreen(
                 onArticleTap = onArticleTap
             )
         }
+
+        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
+        var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
+        if (localError != null) {
+            val message = stringResource(R.string.generic_error, state.error?.localizedMessage ?: "")
+            val retryLabel = stringResource(R.string.retry)
+
+            LaunchedEffect(scaffoldState.snackbarHostState) {
+                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = retryLabel
+                )
+                if (snackBarResult == SnackbarResult.ActionPerformed) {
+                    onRefresh()
+                }
+                localError = null
+            }
+        }
+    }
+}
+
+@Composable
+fun FullScreenLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center)
+    ) {
+        CircularProgressIndicator()
     }
 }
 
 @Composable
 fun ArticleList(
     articles: List<Article>,
-    onArticleTap: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onArticleTap: (String) -> Unit
 ) {
-    LazyColumn(modifier = modifier) {
-        items(items = articles) {
+    LazyColumn {
+        items(articles) {
             ArticleListItem(
                 article = it,
                 onArticleTap = onArticleTap
@@ -158,7 +202,7 @@ fun ListScreenPreview() {
         Surface {
             HomeScreen(
                 state = HomeUiState(articles = mockArticles()),
-                onSwipeRefresh = { },
+                onRefresh = { },
                 onArticleTap = { }
             )
         }

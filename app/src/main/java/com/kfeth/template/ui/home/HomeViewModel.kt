@@ -31,7 +31,8 @@ class HomeViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         articles = resource.data.orEmpty(),
-                        loading = resource.isLoading
+                        loading = resource.isLoading,
+                        error = resource.error
                     )
                 }
             }
@@ -41,5 +42,6 @@ class HomeViewModel @Inject constructor(
 
 data class HomeUiState(
     val articles: List<Article> = emptyList(),
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val error: Throwable? = null
 )

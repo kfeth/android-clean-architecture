@@ -22,7 +22,7 @@ class NewsRepository @Inject constructor(
     fun getBreakingNews(): Flow<Resource<List<Article>>> = networkBoundResource(
         query = { dao.getAll() },
         fetch = {
-            delay(3000)
+            delay(500)
             api.getBreakingNews().articles
         },
         saveFetchResult = { serverResp ->
