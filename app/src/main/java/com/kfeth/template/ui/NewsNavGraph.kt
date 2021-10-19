@@ -47,6 +47,9 @@ fun NewsNavGraph(
         ) { backStackEntry ->
             DetailsScreen(
                 articleId = backStackEntry.arguments?.getString(ArticleId) ?: "",
+                onNavigateUp = {
+                    navController.navigateUp()
+                }
             )
         }
     }
