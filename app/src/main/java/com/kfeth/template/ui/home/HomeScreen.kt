@@ -84,14 +84,7 @@ fun HomeScreen(
 
         SwipeRefresh(
             state = rememberSwipeRefreshState(state.loading),
-            onRefresh = onRefresh,
-            indicator = { state, trigger ->
-                SwipeRefreshIndicator(
-                    state = state,
-                    refreshTriggerDistance = trigger,
-                    backgroundColor = MaterialTheme.colors.primary
-                )
-            }
+            onRefresh = onRefresh
         ) {
             ArticleList(
                 articles = state.articles,
