@@ -139,7 +139,7 @@ fun DetailsScreenPreview() {
     AppTheme {
         Surface {
             DetailsScreen(
-                state = DetailsUiState(article = mockArticles().first()),
+                state = DetailsUiState(article = mockArticles.first()),
                 onNavigateUp = { }
             )
         }

@@ -38,14 +38,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -68,8 +66,6 @@ fun HomeScreen(
     onArticleTap: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
-    Timber.d("State: loading=${state.loading}, articles=${state.articles.size}, error=${state.error}")
-
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -95,7 +91,8 @@ fun HomeScreen(
         // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
         var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
         if (localError != null) {
-            val message = stringResource(R.string.generic_error, state.error?.localizedMessage ?: "")
+            val errorCode = localError?.message ?: ""
+            val message = stringResource(R.string.generic_error, errorCode)
             val retryLabel = stringResource(R.string.retry)
 
             LaunchedEffect(scaffoldState.snackbarHostState) {
@@ -194,7 +191,7 @@ fun ListScreenPreview() {
     AppTheme {
         Surface {
             HomeScreen(
-                state = HomeUiState(articles = mockArticles()),
+                state = HomeUiState(articles = mockArticles),
                 onRefresh = { },
                 onArticleTap = { }
             )
@@ -207,7 +204,7 @@ fun ListScreenPreview() {
 fun ArticleListItemPreview() {
     Surface {
         ArticleListItem(
-            article = mockArticles().first(),
+            article = mockArticles.first(),
             onArticleTap = { }
         )
     }
