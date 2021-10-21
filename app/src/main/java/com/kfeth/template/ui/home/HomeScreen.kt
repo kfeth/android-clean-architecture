@@ -48,14 +48,14 @@ import com.kfeth.template.util.mockArticles
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    onArticleTap: (String) -> Unit
+    onClickListItem: (String) -> Unit
 ) {
     val state by viewModel.uiState.collectAsState()
 
     HomeScreen(
         state = state,
         onRefresh = viewModel::refreshData,
-        onArticleTap = onArticleTap
+        onClickListItem = onClickListItem
     )
 }
 
@@ -63,16 +63,12 @@ fun HomeScreen(
 fun HomeScreen(
     state: HomeUiState,
     onRefresh: () -> Unit,
-    onArticleTap: (String) -> Unit,
+    onClickListItem: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) }
-            )
-        }
+        topBar = { HomeTopBar() }
     ) {
         if (state.loading && state.articles.isEmpty()) {
             FullScreenLoading()
@@ -84,15 +80,14 @@ fun HomeScreen(
         ) {
             ArticleList(
                 articles = state.articles,
-                onArticleTap = onArticleTap
+                onClickListItem = onClickListItem
             )
         }
 
-        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
         var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
+        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
         if (localError != null) {
-            val errorCode = localError?.message ?: ""
-            val message = stringResource(R.string.generic_error, errorCode)
+            val message = stringResource(R.string.generic_error, localError?.message ?: "")
             val retryLabel = stringResource(R.string.retry)
 
             LaunchedEffect(scaffoldState.snackbarHostState) {
@@ -110,6 +105,13 @@ fun HomeScreen(
 }
 
 @Composable
+fun HomeTopBar() {
+    TopAppBar(
+        title = { Text(stringResource(R.string.app_name)) }
+    )
+}
+
+@Composable
 fun FullScreenLoading() {
     Box(
         modifier = Modifier
@@ -123,13 +125,13 @@ fun FullScreenLoading() {
 @Composable
 fun ArticleList(
     articles: List<Article>,
-    onArticleTap: (String) -> Unit
+    onClickListItem: (String) -> Unit
 ) {
     LazyColumn {
         items(articles) {
             ArticleListItem(
                 article = it,
-                onArticleTap = onArticleTap
+                onClickListItem = onClickListItem
             )
         }
     }
@@ -138,14 +140,14 @@ fun ArticleList(
 @Composable
 fun ArticleListItem(
     article: Article,
-    onArticleTap: (String) -> Unit
+    onClickListItem: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clip(shape = MaterialTheme.shapes.medium)
-            .clickable(onClick = { onArticleTap(article.url) })
+            .clip(MaterialTheme.shapes.medium)
+            .clickable { onClickListItem(article.url) }
     ) {
         NetworkImage(
             imageUrl = article.imageUrl,
@@ -153,7 +155,7 @@ fun ArticleListItem(
                 .height(200.dp)
                 .fillMaxWidth()
         )
-        GradientText(
+        ArticleTitleText(
             text = article.title,
             modifier = Modifier.align(alignment = Alignment.BottomCenter)
         )
@@ -161,7 +163,7 @@ fun ArticleListItem(
 }
 
 @Composable
-fun GradientText(
+fun ArticleTitleText(
     text: String,
     modifier: Modifier = Modifier
 ) {
@@ -172,28 +174,21 @@ fun GradientText(
         maxLines = 3,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
+            .background(Color.Black.copy(alpha = 0.5f))
             .fillMaxWidth()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color.Black.copy(alpha = 0.2f),
-                        Color.Black.copy(alpha = 0.8f)
-                    )
-                )
-            )
             .padding(8.dp)
     )
 }
 
 @Preview
 @Composable
-fun ListScreenPreview() {
+fun HomeScreenPreview() {
     AppTheme {
         Surface {
             HomeScreen(
                 state = HomeUiState(articles = mockArticles),
                 onRefresh = { },
-                onArticleTap = { }
+                onClickListItem = { }
             )
         }
     }
@@ -205,7 +200,7 @@ fun ArticleListItemPreview() {
     Surface {
         ArticleListItem(
             article = mockArticles.first(),
-            onArticleTap = { }
+            onClickListItem = { }
         )
     }
 }

@@ -25,9 +25,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsDao(database: NewsDatabase): NewsDao {
-        return database.newsDao()
-    }
+    fun provideNewsDao(database: NewsDatabase): NewsDao = database.newsDao()
 
     @Provides
     @Singleton
@@ -38,37 +36,32 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNewsApi(retrofit: Retrofit): NewsApi {
-        return retrofit.create(NewsApi::class.java)
-    }
+    fun provideNewsApi(retrofit: Retrofit): NewsApi = retrofit.create(NewsApi::class.java)
 
     @Provides
     @Singleton
-    fun provideRetrofit(client: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
+    fun provideRetrofit(client: OkHttpClient): Retrofit =
+        Retrofit.Builder()
             .baseUrl(NewsApi.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .build()
-    }
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient().newBuilder()
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient().newBuilder()
             .callTimeout(10, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
             .build()
-    }
 
     @Singleton
     @Provides
-    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        return HttpLoggingInterceptor().apply {
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
             level = when {
                 BuildConfig.DEBUG -> HttpLoggingInterceptor.Level.BASIC
                 else -> HttpLoggingInterceptor.Level.NONE
             }
         }
-    }
 }

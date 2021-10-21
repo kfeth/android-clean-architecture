@@ -1,5 +1,6 @@
 package com.kfeth.template.ui.components
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,13 +12,13 @@ import com.kfeth.template.R
 fun NetworkImage(
     imageUrl: String?,
     modifier: Modifier = Modifier,
-    placeholderResId: Int = R.drawable.placeholder,
+    @DrawableRes placeholderResId: Int = R.drawable.placeholder
 ) {
     Image(
         painter = rememberImagePainter(
             data = imageUrl,
             builder = {
-                crossfade(enable = true)
+                crossfade(true)
                 placeholder(placeholderResId)
                 error(placeholderResId)
                 fallback(placeholderResId)

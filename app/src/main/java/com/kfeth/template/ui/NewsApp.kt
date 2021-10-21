@@ -8,12 +8,8 @@ import com.kfeth.template.ui.theme.AppTheme
 @Composable
 fun NewsApp() {
     AppTheme {
-        val navController = rememberNavController()
-
         Scaffold {
-            NewsNavGraph(
-                navController = navController
-            )
+            NewsNavGraph()
         }
     }
 }

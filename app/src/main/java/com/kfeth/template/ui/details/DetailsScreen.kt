@@ -57,30 +57,31 @@ fun DetailsScreen(
     onNavigateUp: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text(stringResource(R.string.app_name)) },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateUp) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        }
+        topBar = { DetailsTopBar(onNavigateUp) }
     ) {
         state.article?.let {
-            ArticleDetails(article = state.article)
+            ArticleDetails(state.article)
         }
     }
 }
 
 @Composable
-fun ArticleDetails(
-    article: Article
-) {
+fun DetailsTopBar(onNavigateUp: () -> Unit) {
+    TopAppBar(
+        title = { Text(stringResource(R.string.app_name)) },
+        navigationIcon = {
+            IconButton(onClick = onNavigateUp) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = null
+                )
+            }
+        }
+    )
+}
+
+@Composable
+fun ArticleDetails(article: Article) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
@@ -110,7 +111,7 @@ fun ArticleDetails(
             style = typography.body1,
             modifier = Modifier.padding(8.dp)
         )
-        ReadMoreButton(
+        ViewMoreButton(
             url = article.url,
             modifier = Modifier.align(CenterHorizontally)
         )
@@ -118,7 +119,10 @@ fun ArticleDetails(
 }
 
 @Composable
-fun ReadMoreButton(url: String, modifier: Modifier = Modifier) {
+fun ViewMoreButton(
+    url: String,
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
     val intent = remember { Intent(Intent.ACTION_VIEW, Uri.parse(url)) }
 
@@ -127,7 +131,7 @@ fun ReadMoreButton(url: String, modifier: Modifier = Modifier) {
         modifier = modifier
     ) {
         Text(
-            text = stringResource(R.string.read_more),
+            text = stringResource(R.string.view_more),
             modifier = Modifier.padding(8.dp)
         )
     }

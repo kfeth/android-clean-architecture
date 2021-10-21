@@ -7,8 +7,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.kfeth.template.ui.Destinations.ArticleDetails
-import com.kfeth.template.ui.Destinations.ArticleDetailsArgs.ArticleId
+import com.kfeth.template.ui.Destinations.Details
+import com.kfeth.template.ui.Destinations.DetailsArgs.ArticleId
 import com.kfeth.template.ui.Destinations.Home
 import com.kfeth.template.ui.details.DetailsScreen
 import com.kfeth.template.ui.home.HomeScreen
@@ -17,9 +17,9 @@ import java.nio.charset.StandardCharsets
 
 object Destinations {
     const val Home = "home"
-    const val ArticleDetails = "articleDetails"
+    const val Details = "details"
 
-    object ArticleDetailsArgs {
+    object DetailsArgs {
         const val ArticleId = "articleId"
     }
 }
@@ -34,22 +34,20 @@ fun NewsNavGraph(
     ) {
         composable(Home) {
             HomeScreen(
-                onArticleTap = { articleId ->
-                    val encodedUrl = URLEncoder.encode(articleId, StandardCharsets.UTF_8.toString())
-                    navController.navigate("$ArticleDetails/$encodedUrl")
+                onClickListItem = { articleUrl ->
+                    val encodedUrl = URLEncoder.encode(articleUrl, StandardCharsets.UTF_8.toString())
+                    navController.navigate("$Details/$encodedUrl")
                 }
             )
         }
 
         composable(
-            route = "$ArticleDetails/{$ArticleId}",
+            route = "$Details/{$ArticleId}",
             arguments = listOf(navArgument(ArticleId) { type = NavType.StringType })
         ) { backStackEntry ->
             DetailsScreen(
                 articleId = backStackEntry.arguments?.getString(ArticleId) ?: "",
-                onNavigateUp = {
-                    navController.navigateUp()
-                }
+                onNavigateUp = { navController.navigateUp() }
             )
         }
     }

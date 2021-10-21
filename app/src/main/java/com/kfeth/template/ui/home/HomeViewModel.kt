@@ -27,7 +27,7 @@ class HomeViewModel @Inject constructor(
 
     fun refreshData() {
         viewModelScope.launch {
-            repository.getBreakingNews().collect { resource ->
+            repository.getHeadlines().collect { resource ->
                 _uiState.update {
                     it.copy(
                         articles = resource.data.orEmpty(),

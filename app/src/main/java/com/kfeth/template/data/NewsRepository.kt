@@ -14,21 +14,21 @@ import javax.inject.Singleton
 class NewsRepository @Inject constructor(
     private val api: NewsApi,
     private val dao: NewsDao,
-    private val db: NewsDatabase,
+    private val db: NewsDatabase
 ) {
-    fun getArticle(articleUrl: String): Flow<Article> =
-        dao.getArticle(articleUrl)
+    fun getArticle(articleId: String): Flow<Article> =
+        dao.getArticle(articleId)
 
-    fun getBreakingNews(): Flow<Resource<List<Article>>> = networkBoundResource(
-        query = { dao.getAll() },
+    fun getHeadlines(): Flow<Resource<List<Article>>> = networkBoundResource(
+        query = { dao.getAllArticles() },
         fetch = {
             delay(500)
-            api.getBreakingNews().articles
+            api.getHeadlines().articles
         },
         saveFetchResult = { serverResp ->
             val articles: List<Article> = serverResp.map { it.mapToEntity() }
             db.withTransaction {
-                dao.deleteAll()
+                dao.deleteAllArticles()
                 dao.insert(articles)
             }
         }
