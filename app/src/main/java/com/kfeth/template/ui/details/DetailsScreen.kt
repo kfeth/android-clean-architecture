@@ -144,7 +144,7 @@ fun DetailsScreenPreview() {
         Surface {
             DetailsScreen(
                 state = DetailsUiState(article = mockArticles.first()),
-                onNavigateUp = { }
+                onNavigateUp = {}
             )
         }
     }

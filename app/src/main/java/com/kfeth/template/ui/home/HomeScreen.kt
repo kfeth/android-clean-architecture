@@ -30,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -73,7 +72,6 @@ fun HomeScreen(
         if (state.loading && state.articles.isEmpty()) {
             FullScreenLoading()
         }
-
         SwipeRefresh(
             state = rememberSwipeRefreshState(state.loading),
             onRefresh = onRefresh
@@ -146,6 +144,7 @@ fun ArticleListItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .background(Color.LightGray.copy(alpha = 0.2f))
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClickListItem(article.url) }
     ) {
@@ -169,12 +168,12 @@ fun ArticleTitleText(
 ) {
     Text(
         text = text,
-        style = typography.h6,
+        style = typography.caption,
         color = Color.White,
         maxLines = 3,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
-            .background(Color.Black.copy(alpha = 0.5f))
+            .background(Color.Black.copy(alpha = 0.6f))
             .fillMaxWidth()
             .padding(8.dp)
     )
@@ -187,8 +186,8 @@ fun HomeScreenPreview() {
         Surface {
             HomeScreen(
                 state = HomeUiState(articles = mockArticles),
-                onRefresh = { },
-                onClickListItem = { }
+                onRefresh = {},
+                onClickListItem = {}
             )
         }
     }
@@ -200,7 +199,7 @@ fun ArticleListItemPreview() {
     Surface {
         ArticleListItem(
             article = mockArticles.first(),
-            onClickListItem = { }
+            onClickListItem = {}
         )
     }
 }
