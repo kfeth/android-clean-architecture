@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Breaking News</string>
+    <string name="app_name">News</string>
     <string name="view_more">View More</string>
     <string name="generic_error">Unable to load news at this time. Please try again later (%s)</string>
     <string name="retry">Retry</string>
