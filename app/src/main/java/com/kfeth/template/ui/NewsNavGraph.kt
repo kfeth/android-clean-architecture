@@ -34,8 +34,8 @@ fun NewsNavGraph(
     ) {
         composable(Home) {
             HomeScreen(
-                onClickListItem = { articleUrl ->
-                    val encodedUrl = URLEncoder.encode(articleUrl, StandardCharsets.UTF_8.toString())
+                onClickListItem = { url ->
+                    val encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
                     navController.navigate("$Details/$encodedUrl")
                 }
             )
