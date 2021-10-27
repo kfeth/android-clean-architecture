@@ -8,6 +8,7 @@ data class NewsResponse(
 )
 
 data class ArticleResponse(
+    val source: Source,
     val author: String,
     val title: String,
     val description: String,
@@ -17,10 +18,15 @@ data class ArticleResponse(
     val content: String
 )
 
+data class Source(
+    val name: String
+)
+
 fun ArticleResponse.mapToEntity() =
     Article(
         url = url,
         author = author,
+        source = source.name,
         title = title,
         description = description,
         imageUrl = imageUrl,

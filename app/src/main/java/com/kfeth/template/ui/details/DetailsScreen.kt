@@ -57,7 +57,12 @@ fun DetailsScreen(
     onNavigateUp: () -> Unit
 ) {
     Scaffold(
-        topBar = { DetailsTopBar(onNavigateUp) }
+        topBar = {
+            DetailsTopBar(
+                title = state.article?.source.orEmpty(),
+                onNavigateUp = onNavigateUp
+            )
+        }
     ) {
         state.article?.let {
             ArticleDetails(state.article)
@@ -66,9 +71,18 @@ fun DetailsScreen(
 }
 
 @Composable
-fun DetailsTopBar(onNavigateUp: () -> Unit) {
+fun DetailsTopBar(
+    title: String,
+    onNavigateUp: () -> Unit
+) {
     TopAppBar(
-        title = { Text(stringResource(R.string.app_name)) },
+        title = {
+            if (title.isNotEmpty()) {
+                Text(title)
+            } else {
+                Text(stringResource(R.string.app_name))
+            }
+        },
         navigationIcon = {
             IconButton(onClick = onNavigateUp) {
                 Icon(
@@ -92,6 +106,7 @@ fun ArticleDetails(article: Article) {
                 .fillMaxWidth()
         )
         Spacer(Modifier.height(8.dp))
+
         Text(
             text = article.title,
             style = typography.h6,
@@ -106,11 +121,15 @@ fun ArticleDetails(article: Article) {
             )
             Spacer(Modifier.height(8.dp))
         }
-        Text(
-            text = article.content.orEmpty(),
-            style = typography.body1,
-            modifier = Modifier.padding(8.dp)
-        )
+
+        if (!article.content.isNullOrEmpty()) {
+            Text(
+                text = article.content.orEmpty(),
+                style = typography.body1,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+
         ViewMoreButton(
             url = article.url,
             modifier = Modifier.align(CenterHorizontally)

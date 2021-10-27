@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Article(
     @PrimaryKey val url: String,
     val author: String?,
+    val source: String?,
     val title: String,
     val description: String?,
     val imageUrl: String?,

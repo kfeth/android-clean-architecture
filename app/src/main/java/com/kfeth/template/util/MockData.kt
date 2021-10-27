@@ -6,6 +6,7 @@ val mockArticles: List<Article> = listOf(
     Article(
         url = "https://www.nytimes.com/2021/10/06/us/debt-ceiling-filibuster.html",
         author = "Carl Hulse",
+        source = "The New York Times",
         title = "As Debt Ceiling Vote Looms, Democrats Reconsider Filibuster - The New York " +
             "Times",
         description = "Top Democrats say the Republican refusal to allow a vote to avert a " +
@@ -23,6 +24,7 @@ val mockArticles: List<Article> = listOf(
             "apple-ipad-mini-airpods-max-dji-mavic-air-2-drone-" +
             "amazon-fire-hd-10-bundle-deal-sale",
         author = "Sheena Vasani",
+        source = "The Verge",
         title = "Apple’s new iPad Mini is already discounted at Adorama - The Verge",
         description = "The 2021 iPad Mini is currently on sale at Adorama for \$499, the first " +
             "discount the miniature tablet has received. There are also discounts today on " +
