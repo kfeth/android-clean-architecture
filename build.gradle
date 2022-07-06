@@ -3,15 +3,15 @@ buildscript {
 
     ext {
         // Android
-        compileSdkVersion = 31
+        compileSdkVersion = 32
         minSdkVersion = 21
-        targetSdkVersion = 31
+        targetSdkVersion = 32
 
         // Dependencies
         accompanist_version = "0.20.0"
         coil_version = "1.4.0"
         compose_version = "1.1.1"
-        gradle_version = "7.1.2"
+        gradle_version = "7.2.1"
         hilt_compose_version = "1.0.0"
         hilt_version = "2.41"
         kotlin_version = "1.6.10"
