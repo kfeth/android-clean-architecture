@@ -3,10 +3,13 @@ package com.kfeth.template.data
 import androidx.room.withTransaction
 import com.kfeth.template.api.NewsApi
 import com.kfeth.template.api.mapToEntity
+import com.kfeth.template.di.IoDispatcher
 import com.kfeth.template.util.Resource
 import com.kfeth.template.util.networkBoundResource
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +17,8 @@ import javax.inject.Singleton
 class NewsRepository @Inject constructor(
     private val api: NewsApi,
     private val dao: NewsDao,
-    private val db: NewsDatabase
+    private val db: NewsDatabase,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
     fun getArticle(articleId: String): Flow<Article> =
         dao.getArticle(articleId)
@@ -32,5 +36,5 @@ class NewsRepository @Inject constructor(
                 dao.insert(articles)
             }
         }
-    )
+    ).flowOn(ioDispatcher)
 }

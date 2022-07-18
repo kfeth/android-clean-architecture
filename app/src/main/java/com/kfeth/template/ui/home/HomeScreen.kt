@@ -43,6 +43,7 @@ import com.kfeth.template.data.Article
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
+import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -69,6 +70,8 @@ fun HomeScreen(
         scaffoldState = scaffoldState,
         topBar = { HomeTopBar() }
     ) {
+        Timber.d("loading:${state.loading}, articles:${state.articles.size}, error:${state.error?.message}")
+
         if (state.loading && state.articles.isEmpty()) {
             FullScreenLoading()
         }
