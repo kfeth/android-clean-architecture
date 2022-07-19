@@ -69,13 +69,11 @@ class HomeViewModel @Inject constructor(
 
     fun onRefresh() {
         viewModelScope.launch {
-            with(repository) {
-                isRefreshing.emit(true)
-                try {
-                    refreshNews()
-                } finally {
-                    isRefreshing.emit(false)
-                }
+            isRefreshing.emit(true)
+            try {
+                repository.refreshNews()
+            } finally {
+                isRefreshing.emit(false)
             }
         }
     }
