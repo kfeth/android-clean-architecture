@@ -17,15 +17,15 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class UiState(
-    val topNews: NewsUiState,
+data class HomeUiState(
+    val latestNews: NewsUiState,
     val isRefreshing: Boolean,
     val isError: Boolean
 )
 
 @Immutable
 sealed interface NewsUiState {
-    data class Success(val news: List<Article>) : NewsUiState
+    data class Success(val articles: List<Article>) : NewsUiState
     object Error : NewsUiState
     object Loading : NewsUiState
 }
@@ -35,25 +35,24 @@ class HomeViewModel @Inject constructor(
     private val repository: NewsRepository
 ) : ViewModel() {
 
-    private val allNews: Flow<Result<List<Article>>> =
+    private val latestNews: Flow<Result<List<Article>>> =
         repository.getNewsStream().asResult()
 
     private val isRefreshing = MutableStateFlow(false)
     private val isError = MutableStateFlow(false)
 
-    val uiState: StateFlow<UiState> = combine(
-        allNews,
+    val uiState: StateFlow<HomeUiState> = combine(
+        latestNews,
         isRefreshing,
         isError
     ) { newsResult, refreshing, errorOccurred ->
-
-        val topNews: NewsUiState = when (newsResult) {
+        val latestNews: NewsUiState = when (newsResult) {
             is Result.Success -> NewsUiState.Success(newsResult.data)
             is Result.Loading -> NewsUiState.Loading
             is Result.Error -> NewsUiState.Error
         }
-        UiState(
-            topNews,
+        HomeUiState(
+            latestNews,
             refreshing,
             errorOccurred
         )
@@ -61,7 +60,7 @@ class HomeViewModel @Inject constructor(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UiState(
+            initialValue = HomeUiState(
                 NewsUiState.Loading,
                 isRefreshing = false,
                 isError = false

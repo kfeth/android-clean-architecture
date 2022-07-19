@@ -54,7 +54,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreen(
-    state: UiState,
+    state: HomeUiState,
     onRefresh: () -> Unit,
     onClickListItem: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -69,7 +69,7 @@ fun HomeScreen(
             modifier = Modifier.padding(padding)
         ) {
             ArticleList(
-                uiState = state.topNews,
+                uiState = state.latestNews,
                 onClickListItem = onClickListItem
             )
         }
@@ -128,7 +128,7 @@ fun ArticleList(
                 item { LoadingIndicator() }
             }
             is NewsUiState.Success -> {
-                items(uiState.news) { article ->
+                items(uiState.articles) { article ->
                     ArticleListItem(article = article, onClickListItem = onClickListItem)
                 }
             }
