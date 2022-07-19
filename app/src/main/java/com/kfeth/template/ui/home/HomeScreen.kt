@@ -33,7 +33,6 @@ import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kfeth.template.R
 import com.kfeth.template.data.Article
-import com.kfeth.template.data.asExternalModel
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
@@ -73,7 +72,7 @@ fun HomeScreen(
                 onClickListItem = onClickListItem
             )
         }
-        // error handle
+        // todo error handle
 //        var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
 //        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
 //        if (localError != null) {
@@ -118,11 +117,10 @@ fun ArticleList(
     uiState: NewsUiState,
     onClickListItem: (String) -> Unit
 ) {
-    LazyColumn(
-    ) {
+    LazyColumn {
         when (uiState) {
             NewsUiState.Error -> {
-                // error handle
+                // todo error handle
             }
             NewsUiState.Loading -> {
                 item { LoadingIndicator() }
@@ -147,6 +145,7 @@ fun ArticleListItem(
             .padding(16.dp)
             .background(Color.LightGray.copy(alpha = 0.2f))
             .clip(MaterialTheme.shapes.medium)
+        // todo fix click & image
 //            .clickable { onClickListItem(article.url) }
     ) {
         NetworkImage(
@@ -185,11 +184,15 @@ fun ArticleTitleText(
 fun HomeScreenPreview() {
     AppTheme {
         Surface {
-//            HomeScreen(
-//                state = HomeUiState(articles = mockArticles),
-//                onRefresh = {},
-//                onClickListItem = {}
-//            )
+            HomeScreen(
+                state = HomeUiState(
+                    latestNews = NewsUiState.Success(mockArticles),
+                    isError = false,
+                    isRefreshing = false
+                ),
+                onRefresh = {},
+                onClickListItem = {}
+            )
         }
     }
 }
@@ -199,7 +202,7 @@ fun HomeScreenPreview() {
 fun ArticleListItemPreview() {
     Surface {
         ArticleListItem(
-            article = mockArticles.first().asExternalModel(),
+            article = mockArticles.first(),
             onClickListItem = {}
         )
     }

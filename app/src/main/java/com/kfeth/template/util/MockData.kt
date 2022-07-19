@@ -1,8 +1,10 @@
 package com.kfeth.template.util
 
+import com.kfeth.template.data.Article
 import com.kfeth.template.data.ArticleEntity
+import com.kfeth.template.data.asExternalModel
 
-val mockArticles: List<ArticleEntity> = listOf(
+val mockArticles: List<Article> = listOf(
     ArticleEntity(
         url = "https://www.nytimes.com/2021/10/06/us/debt-ceiling-filibuster.html",
         author = "Carl Hulse",
@@ -18,7 +20,7 @@ val mockArticles: List<ArticleEntity> = listOf(
         content = "Democrats urging a change in filibuster rules said they hoped the nature of" +
             " the debt limit fight, with widespread warnings of global economic calamity " +
             "if the government defaults and Republicans refus… [+4388 chars]"
-    ),
+    ).asExternalModel(),
     ArticleEntity(
         url = "https://www.theverge.com/good-deals/2021/10/6/22710829/" +
             "apple-ipad-mini-airpods-max-dji-mavic-air-2-drone-" +
@@ -36,5 +38,5 @@ val mockArticles: List<ArticleEntity> = listOf(
         content = "You can also save on the Apple Pencil and AirPods Max If you buy something " +
             "from a Verge link, Vox Media may earn a commission. See our ethics statement. " +
             "The new iPad Mini is \$25 off today, the firs… [+4859 chars]"
-    )
+    ).asExternalModel()
 )
