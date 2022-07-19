@@ -1,8 +1,9 @@
 package com.kfeth.template.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,18 +16,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
-import androidx.compose.material.SnackbarResult
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,7 +35,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kfeth.template.R
-import com.kfeth.template.data.Article
+import com.kfeth.template.data.ArticleRes
+import com.kfeth.template.data.asExternalModel
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
@@ -54,14 +51,14 @@ fun HomeScreen(
 
     HomeScreen(
         state = state,
-        onRefresh = viewModel::refreshData,
+        onRefresh = viewModel::onRefresh,
         onClickListItem = onClickListItem
     )
 }
 
 @Composable
 fun HomeScreen(
-    state: HomeUiState,
+    state: UiState,
     onRefresh: () -> Unit,
     onClickListItem: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -69,39 +66,35 @@ fun HomeScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { HomeTopBar() }
-    ) {
-        Timber.d("loading:${state.loading}, articles:${state.articles.size}, error:${state.error?.message}")
-
-        if (state.loading && state.articles.isEmpty()) {
-            FullScreenLoading()
-        }
+    ) { padding ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(state.loading),
-            onRefresh = onRefresh
+            state = rememberSwipeRefreshState(state.isRefreshing),
+            onRefresh = onRefresh,
+            modifier = Modifier.padding(padding)
         ) {
             ArticleList(
-                articles = state.articles,
+                uiState = state.topNews,
                 onClickListItem = onClickListItem
             )
         }
-
-        var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
-        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
-        if (localError != null) {
-            val message = stringResource(R.string.generic_error, localError?.message ?: "")
-            val retryLabel = stringResource(R.string.retry)
-
-            LaunchedEffect(scaffoldState.snackbarHostState) {
-                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-                    message = message,
-                    actionLabel = retryLabel
-                )
-                if (snackBarResult == SnackbarResult.ActionPerformed) {
-                    onRefresh()
-                }
-                localError = null
-            }
-        }
+        // error handle
+//        var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
+//        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
+//        if (localError != null) {
+//            val message = stringResource(R.string.generic_error, localError?.message ?: "")
+//            val retryLabel = stringResource(R.string.retry)
+//
+//            LaunchedEffect(scaffoldState.snackbarHostState) {
+//                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
+//                    message = message,
+//                    actionLabel = retryLabel
+//                )
+//                if (snackBarResult == SnackbarResult.ActionPerformed) {
+//                    onRefresh()
+//                }
+//                localError = null
+//            }
+//        }
     }
 }
 
@@ -113,34 +106,43 @@ fun HomeTopBar() {
 }
 
 @Composable
-fun FullScreenLoading() {
+fun LoadingIndicator(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        contentAlignment = Alignment.Center,
+        modifier = modifier
             .fillMaxSize()
-            .wrapContentSize(Alignment.Center)
+            .padding(16.dp)
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = Color.LightGray)
     }
 }
 
 @Composable
 fun ArticleList(
-    articles: List<Article>,
+    uiState: NewsUiState,
     onClickListItem: (String) -> Unit
 ) {
-    LazyColumn {
-        items(articles) {
-            ArticleListItem(
-                article = it,
-                onClickListItem = onClickListItem
-            )
+    LazyColumn(
+    ) {
+        when (uiState) {
+            NewsUiState.Error -> {
+                // error handle
+            }
+            NewsUiState.Loading -> {
+                item { LoadingIndicator() }
+            }
+            is NewsUiState.Success -> {
+                items(uiState.news) { article ->
+                    ArticleListItem(article = article, onClickListItem = onClickListItem)
+                }
+            }
         }
     }
 }
 
 @Composable
 fun ArticleListItem(
-    article: Article,
+    article: ArticleRes,
     onClickListItem: (String) -> Unit
 ) {
     Box(
@@ -149,10 +151,10 @@ fun ArticleListItem(
             .padding(16.dp)
             .background(Color.LightGray.copy(alpha = 0.2f))
             .clip(MaterialTheme.shapes.medium)
-            .clickable { onClickListItem(article.url) }
+//            .clickable { onClickListItem(article.url) }
     ) {
         NetworkImage(
-            imageUrl = article.imageUrl,
+            imageUrl = "",
             modifier = Modifier
                 .height(200.dp)
                 .fillMaxWidth()
@@ -187,11 +189,11 @@ fun ArticleTitleText(
 fun HomeScreenPreview() {
     AppTheme {
         Surface {
-            HomeScreen(
-                state = HomeUiState(articles = mockArticles),
-                onRefresh = {},
-                onClickListItem = {}
-            )
+//            HomeScreen(
+//                state = HomeUiState(articles = mockArticles),
+//                onRefresh = {},
+//                onClickListItem = {}
+//            )
         }
     }
 }
@@ -201,7 +203,7 @@ fun HomeScreenPreview() {
 fun ArticleListItemPreview() {
     Surface {
         ArticleListItem(
-            article = mockArticles.first(),
+            article = mockArticles.first().asExternalModel(),
             onClickListItem = {}
         )
     }

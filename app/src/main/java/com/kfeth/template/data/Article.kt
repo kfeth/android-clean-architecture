@@ -14,3 +14,11 @@ data class Article(
     val publishedAt: String,
     val content: String?
 )
+
+fun Article.asExternalModel() = ArticleRes(
+    title = title,
+)
+
+data class ArticleRes(
+    val title: String,
+)
