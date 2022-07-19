@@ -11,13 +11,10 @@ import kotlinx.coroutines.flow.Flow
 interface NewsDao {
 
     @Transaction
-    suspend fun deleteAndInsert(news: List<ArticleEntity>) {
+    suspend fun deleteAndInsert(articles: List<ArticleEntity>) {
         deleteAllArticles()
-        insertOrIgnoreNews(news)
+        insert(articles)
     }
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertOrIgnoreNews(movies: List<ArticleEntity>): List<Long>
 
     @Query("SELECT * FROM article")
     fun getAllArticles(): Flow<List<ArticleEntity>>

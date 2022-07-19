@@ -20,7 +20,6 @@ import javax.inject.Singleton
 class NewsRepository @Inject constructor(
     private val api: NewsApi,
     private val dao: NewsDao,
-    private val db: NewsDatabase,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
     fun getNewsStream(): Flow<List<Article>> {
@@ -34,28 +33,30 @@ class NewsRepository @Inject constructor(
     }
 
     suspend fun refreshNews() {
+        // todo reduce this
         delay(2000)
         api.getHeadlines()
             .also { response ->
-                dao.deleteAndInsert(news = response.articles.map(ArticleResponse::mapToEntity))
+                dao.deleteAndInsert(articles = response.articles.map(ArticleResponse::mapToEntity))
             }
     }
 
     fun getArticle(articleId: String): Flow<ArticleEntity> =
         dao.getArticle(articleId)
 
-    fun getHeadlines(): Flow<Result<List<ArticleEntity>>> = networkBoundResource(
-        query = { dao.getAllArticles() },
-        fetch = {
-            delay(500)
-            api.getHeadlines().articles
-        },
-        saveFetchResult = { serverResp ->
-            val articles: List<ArticleEntity> = serverResp.map { it.mapToEntity() }
-            db.withTransaction {
-                dao.deleteAllArticles()
-                dao.insert(articles)
-            }
-        }
-    ).flowOn(ioDispatcher)
+    // todo clean this
+//    fun getHeadlines(): Flow<Result<List<ArticleEntity>>> = networkBoundResource(
+//        query = { dao.getAllArticles() },
+//        fetch = {
+//            delay(500)
+//            api.getHeadlines().articles
+//        },
+//        saveFetchResult = { serverResp ->
+//            val articles: List<ArticleEntity> = serverResp.map { it.mapToEntity() }
+//            db.withTransaction {
+//                dao.deleteAllArticles()
+//                dao.insert(articles)
+//            }
+//        }
+//    ).flowOn(ioDispatcher)
 }
