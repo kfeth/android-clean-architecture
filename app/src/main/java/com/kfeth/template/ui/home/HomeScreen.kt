@@ -63,6 +63,9 @@ fun HomeScreen(
         scaffoldState = scaffoldState,
         topBar = { HomeTopBar() }
     ) { padding ->
+        if (state.isRefreshing) {
+            LoadingIndicator()
+        }
         SwipeRefresh(
             state = rememberSwipeRefreshState(state.isRefreshing),
             onRefresh = onRefresh,
@@ -73,6 +76,7 @@ fun HomeScreen(
                 onClickListItem = onClickListItem
             )
         }
+
         // todo error handle
 //        var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
 //        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
@@ -118,18 +122,10 @@ fun ArticleList(
     uiState: NewsUiState,
     onClickListItem: (String) -> Unit
 ) {
-    LazyColumn {
-        when (uiState) {
-            NewsUiState.Error -> {
-                // todo error handle
-            }
-            NewsUiState.Loading -> {
-                item { LoadingIndicator() }
-            }
-            is NewsUiState.Success -> {
-                items(uiState.articles) { article ->
-                    ArticleListItem(article = article, onClickListItem = onClickListItem)
-                }
+    if (uiState is NewsUiState.Success) {
+        LazyColumn {
+            items(uiState.articles) { article ->
+                ArticleListItem(article = article, onClickListItem = onClickListItem)
             }
         }
     }
@@ -144,7 +140,7 @@ fun ArticleListItem(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color.LightGray.copy(alpha = 0.2f))
+            .background(Color.LightGray)
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClickListItem(article.url) }
     ) {
