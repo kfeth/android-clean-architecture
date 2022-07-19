@@ -1,14 +1,11 @@
 package com.kfeth.template.ui.home
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
@@ -35,12 +32,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.kfeth.template.R
-import com.kfeth.template.data.ArticleRes
+import com.kfeth.template.data.Article
 import com.kfeth.template.data.asExternalModel
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
-import timber.log.Timber
 
 @Composable
 fun HomeScreen(
@@ -142,7 +138,7 @@ fun ArticleList(
 
 @Composable
 fun ArticleListItem(
-    article: ArticleRes,
+    article: Article,
     onClickListItem: (String) -> Unit
 ) {
     Box(

@@ -1,7 +1,7 @@
 package com.kfeth.template.api
 
 import com.google.gson.annotations.SerializedName
-import com.kfeth.template.data.Article
+import com.kfeth.template.data.ArticleEntity
 
 data class NewsResponse(
     val articles: List<ArticleResponse>
@@ -23,7 +23,7 @@ data class Source(
 )
 
 fun ArticleResponse.mapToEntity() =
-    Article(
+    ArticleEntity(
         url = url,
         author = author,
         source = source.name,

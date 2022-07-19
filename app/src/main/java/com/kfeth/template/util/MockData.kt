@@ -1,9 +1,9 @@
 package com.kfeth.template.util
 
-import com.kfeth.template.data.Article
+import com.kfeth.template.data.ArticleEntity
 
-val mockArticles: List<Article> = listOf(
-    Article(
+val mockArticles: List<ArticleEntity> = listOf(
+    ArticleEntity(
         url = "https://www.nytimes.com/2021/10/06/us/debt-ceiling-filibuster.html",
         author = "Carl Hulse",
         source = "The New York Times",
@@ -19,7 +19,7 @@ val mockArticles: List<Article> = listOf(
             " the debt limit fight, with widespread warnings of global economic calamity " +
             "if the government defaults and Republicans refus… [+4388 chars]"
     ),
-    Article(
+    ArticleEntity(
         url = "https://www.theverge.com/good-deals/2021/10/6/22710829/" +
             "apple-ipad-mini-airpods-max-dji-mavic-air-2-drone-" +
             "amazon-fire-hd-10-bundle-deal-sale",

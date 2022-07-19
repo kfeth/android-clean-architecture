@@ -3,7 +3,7 @@ package com.kfeth.template.ui.home
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kfeth.template.data.ArticleRes
+import com.kfeth.template.data.Article
 import com.kfeth.template.data.NewsRepository
 import com.kfeth.template.util.Result
 import com.kfeth.template.util.asResult
@@ -25,7 +25,7 @@ data class UiState(
 
 @Immutable
 sealed interface NewsUiState {
-    data class Success(val news: List<ArticleRes>) : NewsUiState
+    data class Success(val news: List<Article>) : NewsUiState
     object Error : NewsUiState
     object Loading : NewsUiState
 }
@@ -35,7 +35,7 @@ class HomeViewModel @Inject constructor(
     private val repository: NewsRepository
 ) : ViewModel() {
 
-    private val allNews: Flow<Result<List<ArticleRes>>> =
+    private val allNews: Flow<Result<List<Article>>> =
         repository.getNewsStream().asResult()
 
     private val isRefreshing = MutableStateFlow(false)

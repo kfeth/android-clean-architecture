@@ -1,13 +1,9 @@
 package com.kfeth.template.util
 
-import com.kfeth.template.data.Article
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
-import timber.log.Timber
 
 /* https://developer.android.com/jetpack/guide#addendum */
 inline fun <ResultType, RequestType> networkBoundResource(

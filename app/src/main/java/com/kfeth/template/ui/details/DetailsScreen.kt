@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kfeth.template.R
-import com.kfeth.template.data.Article
+import com.kfeth.template.data.ArticleEntity
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
@@ -95,7 +95,7 @@ fun DetailsTopBar(
 }
 
 @Composable
-fun ArticleDetails(article: Article) {
+fun ArticleDetails(article: ArticleEntity) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {

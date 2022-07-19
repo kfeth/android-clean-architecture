@@ -23,9 +23,9 @@ class NewsRepository @Inject constructor(
     private val db: NewsDatabase,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher
 ) {
-    fun getNewsStream(): Flow<List<ArticleRes>> {
+    fun getNewsStream(): Flow<List<Article>> {
         return dao.getAllArticles().map { entities ->
-            entities.map(Article::asExternalModel)
+            entities.map(ArticleEntity::asExternalModel)
         }.onEach {
             if (it.isEmpty()) {
                 refreshNews()
@@ -41,17 +41,17 @@ class NewsRepository @Inject constructor(
             }
     }
 
-    fun getArticle(articleId: String): Flow<Article> =
+    fun getArticle(articleId: String): Flow<ArticleEntity> =
         dao.getArticle(articleId)
 
-    fun getHeadlines(): Flow<Result<List<Article>>> = networkBoundResource(
+    fun getHeadlines(): Flow<Result<List<ArticleEntity>>> = networkBoundResource(
         query = { dao.getAllArticles() },
         fetch = {
             delay(500)
             api.getHeadlines().articles
         },
         saveFetchResult = { serverResp ->
-            val articles: List<Article> = serverResp.map { it.mapToEntity() }
+            val articles: List<ArticleEntity> = serverResp.map { it.mapToEntity() }
             db.withTransaction {
                 dao.deleteAllArticles()
                 dao.insert(articles)
