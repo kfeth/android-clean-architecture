@@ -17,6 +17,9 @@ data class ArticleEntity(
 
 fun ArticleEntity.asExternalModel() = Article(
     url = url,
+    author = author.orEmpty(),
     title = title,
-    imageUrl = imageUrl
+    imageUrl = imageUrl,
+    source = source.orEmpty(),
+    content = content.orEmpty()
 )

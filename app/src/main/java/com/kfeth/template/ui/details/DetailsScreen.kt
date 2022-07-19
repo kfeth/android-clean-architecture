@@ -31,7 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.kfeth.template.R
-import com.kfeth.template.data.ArticleEntity
+import com.kfeth.template.data.Article
 import com.kfeth.template.ui.components.NetworkImage
 import com.kfeth.template.ui.theme.AppTheme
 import com.kfeth.template.util.mockArticles
@@ -95,7 +95,7 @@ fun DetailsTopBar(
 }
 
 @Composable
-fun ArticleDetails(article: ArticleEntity) {
+fun ArticleDetails(article: Article) {
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
@@ -113,7 +113,7 @@ fun ArticleDetails(article: ArticleEntity) {
             modifier = Modifier.padding(8.dp)
         )
 
-        if (!article.author.isNullOrEmpty()) {
+        if (article.author.isNotEmpty()) {
             Text(
                 text = article.author,
                 style = typography.subtitle2,
@@ -122,9 +122,9 @@ fun ArticleDetails(article: ArticleEntity) {
             Spacer(Modifier.height(8.dp))
         }
 
-        if (!article.content.isNullOrEmpty()) {
+        if (article.content.isNotEmpty()) {
             Text(
-                text = article.content.orEmpty(),
+                text = article.content,
                 style = typography.body1,
                 modifier = Modifier.padding(8.dp)
             )
@@ -156,16 +156,15 @@ fun ViewMoreButton(
     }
 }
 
-// todo fix preview
-//@Preview
-//@Composable
-//fun DetailsScreenPreview() {
-//    AppTheme {
-//        Surface {
-//            DetailsScreen(
-//                state = DetailsUiState(article = mockArticles.first()),
-//                onNavigateUp = {}
-//            )
-//        }
-//    }
-//}
+@Preview
+@Composable
+fun DetailsScreenPreview() {
+    AppTheme {
+        Surface {
+            DetailsScreen(
+                state = DetailsUiState(article = mockArticles.first()),
+                onNavigateUp = {}
+            )
+        }
+    }
+}

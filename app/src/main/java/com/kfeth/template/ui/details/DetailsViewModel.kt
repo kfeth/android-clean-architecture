@@ -2,7 +2,7 @@ package com.kfeth.template.ui.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.kfeth.template.data.ArticleEntity
+import com.kfeth.template.data.Article
 import com.kfeth.template.data.NewsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,5 +37,5 @@ class DetailsViewModel @Inject constructor(
 
 data class DetailsUiState(
     val loading: Boolean = false,
-    val article: ArticleEntity? = null
+    val article: Article? = null
 )
