@@ -5,9 +5,9 @@ import com.kfeth.template.api.NewsApi
 import com.kfeth.template.api.mapToEntity
 import com.kfeth.template.di.IoDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,22 +20,18 @@ class NewsRepository @Inject constructor(
     fun getNewsStream(): Flow<List<Article>> {
         return dao.getAllArticles().map { entities ->
             entities.map(ArticleEntity::asExternalModel)
-        }.onEach {
-            if (it.isEmpty()) {
-                refreshNews()
-            }
         }
     }
 
     suspend fun refreshNews() {
+        delay(500)
         api.getHeadlines()
             .also { response ->
-                dao.deleteAndInsert(articles = response.articles.map(ArticleResponse::mapToEntity))
+                val articles = response.articles.map(ArticleResponse::mapToEntity)
+                dao.deleteAndInsert(articles)
             }
     }
 
     fun getArticle(articleId: String): Flow<Article> =
-        dao.getArticle(articleId).map {
-            it.asExternalModel()
-        }
+        dao.getArticle(articleId).map(ArticleEntity::asExternalModel)
 }

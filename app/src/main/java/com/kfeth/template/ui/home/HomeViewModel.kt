@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 data class HomeUiState(
@@ -46,6 +47,8 @@ class HomeViewModel @Inject constructor(
         isRefreshing,
         isError
     ) { newsResult, refreshing, errorOccurred ->
+        Timber.i("State:${newsResult.javaClass.simpleName}, refresh:$refreshing, error:$errorOccurred")
+
         val latestNews: NewsUiState = when (newsResult) {
             is Result.Success -> NewsUiState.Success(newsResult.data)
             is Result.Loading -> NewsUiState.Loading
@@ -66,6 +69,10 @@ class HomeViewModel @Inject constructor(
                 isError = false
             )
         )
+
+    init {
+        onRefresh()
+    }
 
     fun onRefresh() {
         viewModelScope.launch {
