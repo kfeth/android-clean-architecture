@@ -1,6 +1,7 @@
 package com.kfeth.template.ui.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -145,11 +146,10 @@ fun ArticleListItem(
             .padding(16.dp)
             .background(Color.LightGray.copy(alpha = 0.2f))
             .clip(MaterialTheme.shapes.medium)
-        // todo fix click & image
-//            .clickable { onClickListItem(article.url) }
+            .clickable { onClickListItem(article.url) }
     ) {
         NetworkImage(
-            imageUrl = "",
+            imageUrl = article.imageUrl,
             modifier = Modifier
                 .height(200.dp)
                 .fillMaxWidth()

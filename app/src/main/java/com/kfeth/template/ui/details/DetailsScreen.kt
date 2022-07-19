@@ -156,15 +156,16 @@ fun ViewMoreButton(
     }
 }
 
-@Preview
-@Composable
-fun DetailsScreenPreview() {
-    AppTheme {
-        Surface {
-            DetailsScreen(
-                state = DetailsUiState(article = mockArticles.first()),
-                onNavigateUp = {}
-            )
-        }
-    }
-}
+// todo fix preview
+//@Preview
+//@Composable
+//fun DetailsScreenPreview() {
+//    AppTheme {
+//        Surface {
+//            DetailsScreen(
+//                state = DetailsUiState(article = mockArticles.first()),
+//                onNavigateUp = {}
+//            )
+//        }
+//    }
+//}
