@@ -90,7 +90,7 @@ fun HomeScreen(
         // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
         if (localError != null) {
             val message = stringResource(R.string.generic_error, localError?.message ?: "")
-            val retryLabel = stringResource(R.string.ok_button_text)
+            val retryLabel = stringResource(R.string.retry)
 
             LaunchedEffect(scaffoldState.snackbarHostState) {
                 val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
