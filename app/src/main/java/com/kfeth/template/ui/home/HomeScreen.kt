@@ -43,10 +43,10 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onClickListItem: (String) -> Unit
 ) {
-    val state by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     HomeScreen(
-        state = state,
+        uiState = uiState,
         onRefresh = viewModel::onRefresh,
         onClickListItem = onClickListItem
     )
@@ -54,7 +54,7 @@ fun HomeScreen(
 
 @Composable
 fun HomeScreen(
-    state: HomeUiState,
+    uiState: HomeUiState,
     onRefresh: () -> Unit,
     onClickListItem: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -63,16 +63,17 @@ fun HomeScreen(
         scaffoldState = scaffoldState,
         topBar = { HomeTopBar() }
     ) { padding ->
-        if (state.isRefreshing) {
+
+        if (uiState.newsState is NewsUiState.Loading) {
             LoadingIndicator()
         }
         SwipeRefresh(
-            state = rememberSwipeRefreshState(state.isRefreshing),
+            state = rememberSwipeRefreshState(uiState.isRefreshing),
             onRefresh = onRefresh,
             modifier = Modifier.padding(padding)
         ) {
             ArticleList(
-                uiState = state.latestNews,
+                uiState = uiState.newsState,
                 onClickListItem = onClickListItem
             )
         }
@@ -181,8 +182,8 @@ fun HomeScreenPreview() {
     AppTheme {
         Surface {
             HomeScreen(
-                state = HomeUiState(
-                    latestNews = NewsUiState.Success(mockArticles),
+                uiState = HomeUiState(
+                    newsState = NewsUiState.Success(mockArticles),
                     isError = false,
                     isRefreshing = false
                 ),

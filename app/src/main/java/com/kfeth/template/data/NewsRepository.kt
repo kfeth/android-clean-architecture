@@ -8,6 +8,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,6 +21,10 @@ class NewsRepository @Inject constructor(
     fun getNewsStream(): Flow<List<Article>> {
         return dao.getAllArticles().map { entities ->
             entities.map(ArticleEntity::asExternalModel)
+        }.onEach {
+            if (it.isEmpty()) {
+                refreshNews()
+            }
         }
     }
 

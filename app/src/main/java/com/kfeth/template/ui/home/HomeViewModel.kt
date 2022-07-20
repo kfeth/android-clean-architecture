@@ -15,11 +15,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 data class HomeUiState(
-    val latestNews: NewsUiState,
+    val newsState: NewsUiState,
     val isRefreshing: Boolean,
     val isError: Boolean
 )
@@ -36,18 +35,17 @@ class HomeViewModel @Inject constructor(
     private val repository: NewsRepository
 ) : ViewModel() {
 
-    private val latestNews: Flow<Result<List<Article>>> =
+    private val newsStream: Flow<Result<List<Article>>> =
         repository.getNewsStream().asResult()
 
     private val isRefreshing = MutableStateFlow(false)
     private val isError = MutableStateFlow(false)
 
     val uiState: StateFlow<HomeUiState> = combine(
-        latestNews,
+        newsStream,
         isRefreshing,
         isError
     ) { newsResult, refreshing, errorOccurred ->
-        Timber.i("State:${newsResult.javaClass.simpleName}, refresh:$refreshing, error:$errorOccurred")
 
         val latestNews: NewsUiState = when (newsResult) {
             is Result.Success -> NewsUiState.Success(newsResult.data)
@@ -65,14 +63,10 @@ class HomeViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = HomeUiState(
                 NewsUiState.Loading,
-                isRefreshing = true,
+                isRefreshing = false,
                 isError = false
             )
         )
-
-    init {
-        onRefresh()
-    }
 
     fun onRefresh() {
         viewModelScope.launch {
