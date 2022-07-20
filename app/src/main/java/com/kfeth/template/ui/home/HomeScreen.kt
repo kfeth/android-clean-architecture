@@ -1,8 +1,11 @@
 package com.kfeth.template.ui.home
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +22,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -48,6 +52,7 @@ fun HomeScreen(
     HomeScreen(
         uiState = uiState,
         onRefresh = viewModel::onRefresh,
+        onErrorConsumed = viewModel::onErrorConsumed,
         onClickListItem = onClickListItem
     )
 }
@@ -56,6 +61,7 @@ fun HomeScreen(
 fun HomeScreen(
     uiState: HomeUiState,
     onRefresh: () -> Unit,
+    onErrorConsumed: () -> Unit,
     onClickListItem: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -64,38 +70,31 @@ fun HomeScreen(
         topBar = { HomeTopBar() }
     ) { padding ->
 
-        if (uiState.newsState is NewsUiState.Loading) {
-            LoadingIndicator()
+        if (uiState.isError) {
+            val errorMessage = stringResource(id = R.string.generic_error)
+            val okText = stringResource(id = R.string.ok_button_text)
+
+            LaunchedEffect(scaffoldState.snackbarHostState) {
+                scaffoldState.snackbarHostState.showSnackbar(
+                    message = errorMessage,
+                    actionLabel = okText
+                )
+                onErrorConsumed()
+            }
         }
+
         SwipeRefresh(
             state = rememberSwipeRefreshState(uiState.isRefreshing),
             onRefresh = onRefresh,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
         ) {
             ArticleList(
-                uiState = uiState.newsState,
+                newsState = uiState.newsState,
                 onClickListItem = onClickListItem
             )
         }
-
-        // todo error handle
-//        var localError by rememberSaveable(state.error) { mutableStateOf(state.error) }
-//        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
-//        if (localError != null) {
-//            val message = stringResource(R.string.generic_error, localError?.message ?: "")
-//            val retryLabel = stringResource(R.string.retry)
-//
-//            LaunchedEffect(scaffoldState.snackbarHostState) {
-//                val snackBarResult = scaffoldState.snackbarHostState.showSnackbar(
-//                    message = message,
-//                    actionLabel = retryLabel
-//                )
-//                if (snackBarResult == SnackbarResult.ActionPerformed) {
-//                    onRefresh()
-//                }
-//                localError = null
-//            }
-//        }
     }
 }
 
@@ -112,7 +111,6 @@ fun LoadingIndicator(modifier: Modifier = Modifier) {
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
     ) {
         CircularProgressIndicator(color = Color.LightGray)
     }
@@ -120,13 +118,24 @@ fun LoadingIndicator(modifier: Modifier = Modifier) {
 
 @Composable
 fun ArticleList(
-    uiState: NewsUiState,
+    newsState: NewsUiState,
     onClickListItem: (String) -> Unit
 ) {
-    if (uiState is NewsUiState.Success) {
-        LazyColumn {
-            items(uiState.articles) { article ->
-                ArticleListItem(article = article, onClickListItem = onClickListItem)
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        when (newsState) {
+            NewsUiState.Error -> {
+                item { ErrorLabel(R.string.generic_error) }
+            }
+            NewsUiState.Loading -> {
+                item { LoadingIndicator() }
+            }
+            is NewsUiState.Success -> {
+                items(newsState.articles) { article ->
+                    ArticleListItem(article = article, onClickListItem = onClickListItem)
+                }
             }
         }
     }
@@ -140,7 +149,6 @@ fun ArticleListItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
             .background(Color.LightGray)
             .clip(MaterialTheme.shapes.medium)
             .clickable { onClickListItem(article.url) }
@@ -176,6 +184,17 @@ fun ArticleTitleText(
     )
 }
 
+@Composable
+fun ErrorLabel(
+    @StringRes title: Int,
+    modifier: Modifier = Modifier
+) {
+    Text(
+        text = stringResource(id = title),
+        modifier = modifier
+    )
+}
+
 @Preview
 @Composable
 fun HomeScreenPreview() {
@@ -187,6 +206,7 @@ fun HomeScreenPreview() {
                     isError = false,
                     isRefreshing = false
                 ),
+                onErrorConsumed = {},
                 onRefresh = {},
                 onClickListItem = {}
             )

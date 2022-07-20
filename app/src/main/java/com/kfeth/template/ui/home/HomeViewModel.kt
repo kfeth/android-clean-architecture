@@ -8,6 +8,7 @@ import com.kfeth.template.data.NewsRepository
 import com.kfeth.template.util.Result
 import com.kfeth.template.util.asResult
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -34,6 +35,12 @@ sealed interface NewsUiState {
 class HomeViewModel @Inject constructor(
     private val repository: NewsRepository
 ) : ViewModel() {
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+        viewModelScope.launch {
+            isError.emit(true)
+        }
+    }
 
     private val newsStream: Flow<Result<List<Article>>> =
         repository.getNewsStream().asResult()
@@ -69,13 +76,19 @@ class HomeViewModel @Inject constructor(
         )
 
     fun onRefresh() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             isRefreshing.emit(true)
             try {
                 repository.refreshNews()
             } finally {
                 isRefreshing.emit(false)
             }
+        }
+    }
+
+    fun onErrorConsumed() {
+        viewModelScope.launch {
+            isError.emit(false)
         }
     }
 }
