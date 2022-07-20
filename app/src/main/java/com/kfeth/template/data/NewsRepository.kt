@@ -30,7 +30,7 @@ class NewsRepository @Inject constructor(
             }
         },
         fetch = {
-            delay(5000)
+            delay(500)
             api.getLatestNews().articles
         },
         saveFetchResult = { result ->
