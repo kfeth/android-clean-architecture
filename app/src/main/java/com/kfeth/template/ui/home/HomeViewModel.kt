@@ -29,7 +29,7 @@ class HomeViewModel @Inject constructor(
     fun onRefresh() {
         viewModelScope.launch {
             repository.getLatestNews().collect { result ->
-                val homeState = when (result) {
+                val homeUiState = when (result) {
                     is Result.Success ->
                         HomeUiState(articles = result.data)
 
@@ -39,9 +39,13 @@ class HomeViewModel @Inject constructor(
                     is Result.Loading ->
                         HomeUiState(loading = true, articles = result.data.orEmpty())
                 }
-                _uiState.update { homeState }
+                _uiState.update { homeUiState }
             }
         }
+    }
+
+    fun onErrorConsumed() {
+        _uiState.update { it.copy(error = null) }
     }
 }
 

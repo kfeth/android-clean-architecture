@@ -24,9 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -55,6 +52,7 @@ fun HomeScreen(
     HomeScreen(
         uiState = uiState,
         onRefresh = viewModel::onRefresh,
+        onErrorConsumed = viewModel::onErrorConsumed,
         onClickListItem = onClickListItem
     )
 }
@@ -63,6 +61,7 @@ fun HomeScreen(
 fun HomeScreen(
     uiState: HomeUiState,
     onRefresh: () -> Unit,
+    onErrorConsumed: () -> Unit,
     onClickListItem: (String) -> Unit,
     scaffoldState: ScaffoldState = rememberScaffoldState()
 ) {
@@ -85,11 +84,8 @@ fun HomeScreen(
             )
         }
 
-        // Todo improve error logic
-        var localError by rememberSaveable(uiState.error) { mutableStateOf(uiState.error) }
-        // If the state contains an error -> show snackBar w/retry & avoid repeat/spamming messages
-        if (localError != null) {
-            val message = stringResource(R.string.generic_error, localError?.message ?: "")
+        uiState.error?.let {
+            val message = stringResource(R.string.generic_error, uiState.error.message.orEmpty())
             val retryLabel = stringResource(R.string.retry)
 
             LaunchedEffect(scaffoldState.snackbarHostState) {
@@ -100,7 +96,7 @@ fun HomeScreen(
                 if (snackBarResult == SnackbarResult.ActionPerformed) {
                     onRefresh()
                 }
-                localError = null
+                onErrorConsumed()
             }
         }
     }
@@ -182,6 +178,7 @@ fun HomeScreenPreview() {
             HomeScreen(
                 uiState = HomeUiState(articles = mockArticles),
                 onRefresh = {},
+                onErrorConsumed = {},
                 onClickListItem = {}
             )
         }

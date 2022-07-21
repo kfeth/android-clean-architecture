@@ -23,7 +23,7 @@ class NewsRepository @Inject constructor(
     fun getArticle(articleId: String): Flow<Article> =
         dao.getArticle(articleId).map(ArticleEntity::asExternalModel)
 
-    fun getLatestNews(): Flow<Result<List<Article>>> = networkBoundResult(
+    suspend fun getLatestNews(): Flow<Result<List<Article>>> = networkBoundResult(
         query = {
             dao.getAllArticles().map { entities ->
                 entities.map(ArticleEntity::asExternalModel)
