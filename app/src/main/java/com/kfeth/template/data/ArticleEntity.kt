@@ -7,19 +7,10 @@ import androidx.room.PrimaryKey
 data class ArticleEntity(
     @PrimaryKey val url: String,
     val author: String?,
-    val source: String?,
+    val source: String,
     val title: String,
-    val description: String?,
+    val description: String,
     val imageUrl: String?,
     val publishedAt: String,
     val content: String?
-)
-
-fun ArticleEntity.asExternalModel() = Article(
-    url = url,
-    author = author.orEmpty(),
-    title = title,
-    imageUrl = imageUrl,
-    source = source.orEmpty(),
-    content = content.orEmpty()
 )

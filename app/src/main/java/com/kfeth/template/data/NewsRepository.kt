@@ -2,10 +2,10 @@ package com.kfeth.template.data
 
 import com.kfeth.template.api.ArticleResponse
 import com.kfeth.template.api.NewsApi
-import com.kfeth.template.api.mapToEntity
 import com.kfeth.template.di.IoDispatcher
 import com.kfeth.template.util.Result
 import com.kfeth.template.util.networkBoundResult
+import com.kfeth.template.util.networkResult
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +23,7 @@ class NewsRepository @Inject constructor(
     fun getArticle(articleId: String): Flow<Article> =
         dao.getArticle(articleId).map(ArticleEntity::asExternalModel)
 
-    suspend fun getLatestNews(): Flow<Result<List<Article>>> = networkBoundResult(
+    suspend fun getLatestNewsStream(): Flow<Result<List<Article>>> = networkBoundResult(
         query = {
             dao.getAllArticles().map { entities ->
                 entities.map(ArticleEntity::asExternalModel)
@@ -33,9 +33,20 @@ class NewsRepository @Inject constructor(
             delay(500)
             api.getLatestNews().articles
         },
-        saveFetchResult = { result ->
-            val articles = result.map(ArticleResponse::mapToEntity)
+        saveFetchResponse = { response ->
+            val articles = response.map(ArticleResponse::asEntityModel)
             dao.deleteAndInsert(articles)
+        }
+    ).flowOn(ioDispatcher)
+
+    // Todo [networkResult] to fetch online-only results
+    suspend fun getLatestNewsOnline(): Flow<Result<List<Article>>> = networkResult(
+        fetch = {
+            delay(500)
+            api.getLatestNews().articles
+        },
+        handleResponse = { response ->
+            response.map(ArticleResponse::asExternalModel)
         }
     ).flowOn(ioDispatcher)
 }

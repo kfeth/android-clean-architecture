@@ -15,16 +15,32 @@ sealed interface Result<out T> {
 inline fun <ResultType, RequestType> networkBoundResult(
     crossinline query: suspend () -> Flow<ResultType>,
     crossinline fetch: suspend () -> RequestType,
-    crossinline saveFetchResult: suspend (RequestType) -> Unit,
+    crossinline saveFetchResponse: suspend (RequestType) -> Unit,
 ) =
     flow {
         val data = query().first()
         emit(Result.Loading(data))
         try {
-            saveFetchResult(fetch())
+            saveFetchResponse(fetch())
             query().collect { emit(Result.Success(it)) }
         } catch (t: Throwable) {
             Timber.w(t)
             query().collect { emit(Result.Error(t, it)) }
         }
     }
+
+inline fun <ResultType, RequestType> networkResult(
+    crossinline fetch: suspend () -> RequestType,
+    crossinline handleResponse: suspend (RequestType) -> ResultType,
+) =
+    flow {
+        emit(Result.Loading<ResultType>(null))
+        try {
+            val data = handleResponse(fetch())
+            emit(Result.Success(data))
+        } catch (t: Throwable) {
+            Timber.w(t)
+            emit(Result.Error(t))
+        }
+    }
+
